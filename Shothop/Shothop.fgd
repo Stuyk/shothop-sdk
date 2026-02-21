@@ -1,0 +1,620 @@
+@BaseClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = Phong
+[
+	_phong(choices) : "Phong shading" : 0 = 
+	[
+		0 : "Disabled"
+		1 : "Smooth shading"
+	]
+	_phong_angle(float) : "Phong smoothing angle" : "89.0"
+]
+
+@BaseClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = VertexMergeDistance
+[
+	_vertex_merge_distance(float) : "Adjustable value to snap vertices to on map build. This can reduce instances of seams between polygons." : "0.03125"
+]
+
+@BaseClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = CullInteriorFaces
+[
+	_cull_interior_faces(choices) : "If true, cull interior faces with matching vertices or faces that are flush within a larger face. Note: This has a performance impact that scales with how many brushes are in the brush entity." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@SolidClass color(204 204 204) base(VertexMergeDistance, CullInteriorFaces) = worldspawn : "Default static world geometry. Builds a StaticBody3D with a single MeshInstance3D and a single convex CollisionShape3D shape." []
+
+@SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_geo : "Static collidable geometry. Builds a StaticBody3D with a MeshInstance3D, a single concave CollisionShape3D, and an OccluderInstance3D." []
+
+@SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_detail : "Static collidable geometry. Builds a StaticBody3D with a MeshInstance3D and a single concave CollisionShape3D. Does not occlude other VisualInstance3D nodes." []
+
+@SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_detail_illusionary : "Static geometry with no collision. Builds a Node3D with a MeshInstance3D. Does not occlude other VisualInstance3D nodes." []
+
+@SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_illusionary : "Static geometry with no collision. Builds a Node3D with a MeshInstance3D and an Occluder3D to aid in render culling of other VisualInstance3D nodes." []
+@SolidClass color(204 204 204) = info_hurtbox : "info_hurtbox" []
+
+@SolidClass color(204 204 204) = func_destructable_barrel : "func_destructable_barrel" 
+[
+	godmode(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@SolidClass color(204 204 204) = trigger_jump_pad : "a jump pad brush" 
+[
+	jump_force(float) : "" : "50.0"
+]
+
+@SolidClass color(204 204 204) = trigger_elevator : "Creates an elevator. The end point must be a info_market_target, and will automatically move to the market target if the player is on the platform. Additionally, moves back after the player leaves the platform." 
+[
+	is_hub_elevator(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	is_remote_triggered(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	name(string) : "" : ""
+	speed(float) : "" : "10.0"
+	target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_water_transparent : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it." 
+[
+	color(color255) : "" : "42 60 62"
+	instant_kill(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	teleport_name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_teleport : "Adds a marker to reference to teleport the player to if they hit a water hazard." 
+[
+	name(string) : "" : "default"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_target : "Adds a marker to reference for various functionality such as elevators, and sometimes triggers." 
+[
+	target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = func_destructable_control_panel : "func_destructable_control_panel" 
+[
+	target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_area_toggle_boolean : "Allows you to toggle a specific save state boolean to true when the area is entered. Automatically saves." 
+[
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_particle_no_rain : "Removes the rain particle effect on the player if present when the player moves inside of the area." []
+
+@SolidClass color(204 204 204) = audio_ambient_area : "When you specify a name the names for each ambient file can be comma delimited. Meaning: ambient_drone,whatever,xyz" 
+[
+	ambient_names(string) : "" : "ambient_drone"
+]
+
+@SolidClass color(204 204 204) = info_area_remove_ammo : "Removes ammo as soon as the player enters the area" []
+
+@SolidClass color(204 204 204) = trigger_area : "Invokes triggers with different behavior." 
+[
+	is_button(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	is_player_only(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	keycard(string) : "" : ""
+	ms_timeout(float) : "" : "0.0"
+	trigger_once(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	trigger_target(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_sound : "Adds a triggerable sound. Make sure to add a name to the trigger_name property. It needs a corresponding trigger to invoke it." 
+[
+	audio_path(string) : "" : ""
+	audio_type(integer) : "" : 0
+	ms_delay(float) : "" : "0.0"
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_new_scene : "Adds a triggerable scene, meaning it can spawn a new instance of something if the full scene path is set." 
+[
+	name(string) : "" : ""
+	scene_path(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = trigger_move_brush : "Creates a moveable piece of geometry that can be moved by a trigger area." 
+[
+	direction(string) : "" : "0.0 -1.0 0.0"
+	move_distance(float) : "" : "2.0"
+	move_speed(float) : "" : "1.0"
+	name(string) : "" : ""
+	toggleable(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@SolidClass color(204 204 204) = info_fog_volume : "Creates a fog volume in the designated box" 
+[
+	color(color255) : "" : "255 255 255"
+	density(float) : "" : "0.0"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_player_spawn : "Adds a player spawn point" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_large : "Adds an adjustable light" 
+[
+	attenuation(float) : "" : "0.3"
+	color(color255) : "" : "214 178 133"
+	energy(float) : "" : "2.0"
+	fade_begin(float) : "" : "40.0"
+	flicker(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	shadows(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_medium : "Adds an adjustable light" 
+[
+	attenuation(float) : "" : "0.3"
+	color(color255) : "" : "214 178 133"
+	energy(float) : "" : "2.0"
+	fade_begin(float) : "" : "40.0"
+	flicker(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	shadows(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_small : "Adds an adjustable light" 
+[
+	attenuation(float) : "" : "0.3"
+	color(color255) : "" : "214 178 133"
+	energy(float) : "" : "2.0"
+	fade_begin(float) : "" : "40.0"
+	flicker(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	shadows(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_xlarge : "Adds an adjustable light" 
+[
+	attenuation(float) : "" : "0.3"
+	color(color255) : "" : "214 178 133"
+	energy(float) : "" : "2.0"
+	fade_begin(float) : "" : "40.0"
+	flicker(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	shadows(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_tiny : "Adds an adjustable light" 
+[
+	attenuation(float) : "" : "0.3"
+	color(color255) : "" : "214 178 133"
+	energy(float) : "" : "2.0"
+	fade_begin(float) : "" : "40.0"
+	flicker(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	shadows(choices) : "" : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@SolidClass color(204 204 204) = destructable_wood : "destructable_wood" []
+
+@SolidClass color(204 204 204) = destructable_glass : "destructable_glass" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_fuse_placement : "Adds a fuse placement spot, this is where the fuse will be placed when a trigger is invoked." 
+[
+	finished(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_footstep_surface : "Marks the surface to be queryable for footstep noises" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_portal_scene : "Adds a portal scene you can teleport to" 
+[
+	enable_fuses(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	scene_path(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = platform_rotate_y : "Rotate a group of brushes on the Y axis" 
+[
+	speed(float) : "" : "45.0"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = audio_loop : "Adds an audio loop that plays endlessly" 
+[
+	bus(string) : "" : "sfx"
+	distance(float) : "" : "50.0"
+	path(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = platform_rotate_z : "Rotate a group of brushes on the Z axis" 
+[
+	speed(float) : "" : "45.0"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_turret : "Adds an enemy turret to the game" 
+[
+	type(string) : "" : "MINIGUN"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_laser : "Adds a laser that does lots of fun damage to you. Yay!" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_bullet : "Adds a bullet that just shoots you. Keep name off if you want it to just shoot forever. Otherwise, providing a name makes it work off of a trigger." 
+[
+	ms_between_shots(float) : "" : "500.0"
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_rocket : "Adds a rocket that just shoots you. Keep name off if you want it to just shoot forever. Otherwise, providing a name makes it work off of a trigger. Homing is already turned off." 
+[
+	ms_between_shots(float) : "" : "500.0"
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = trigger_looping_moveable_brush : "Creates an endless looping brush, when it hits the end point it teleports back to the start position." 
+[
+	direction(string) : "" : "0.0 -1.0 0.0"
+	move_distance(float) : "" : "2.0"
+	move_speed(float) : "" : "1.0"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_fireflies : "Adds bugs that fly around" []
+
+@SolidClass color(204 204 204) = trigger_looping_moveable_smooth_brush : "Creates an endless looping brush, when it hits the end point it loops smoothly  back to the start position" 
+[
+	direction(string) : "" : "0.0 1.0 0.0"
+	move_distance(float) : "" : "2.0"
+	move_speed(float) : "" : "1.0"
+]
+
+@PointClass color(204 204 204) model({"path": "trenchbroom/models/hazard_train.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) studio("trenchbroom/models/hazard_train.glb") = hazard_train : "hazard_train" 
+[
+	target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = destructable_light : "destructable_light" []
+
+@SolidClass color(204 204 204) = destructable_grate : "destructable_grate" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_path : "info_marker_path" 
+[
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_path_simulator : "Adds a small transparent ball that follows info_marker_paths in order" 
+[
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_remove_ammo : "Removes all player ammo when triggered" 
+[
+	name(string) : "" : ""
+	remove_revolver_ammo(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	remove_shotgun_ammo(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@SolidClass color(204 204 204) = trigger_remove_weapons : "Invokes weapon removal on the player" 
+[
+	remove_revolver(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	remove_shotgun(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	restore_on_leave(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_steam : "Adds a steam hazard (trap)" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_steam_valve : "Adds a valve that can be destroyed to spawn a steam trap (hazard)
+" []
+
+@SolidClass color(204 204 204) = info_particle_collision : "Creates a fog volume in the designated box" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_screen_level_details : "Adds details about the level provided by name on a screen" 
+[
+	level_name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_screen_area_unlock : "Adds details about the area unlocks on a screen" 
+[
+	area_name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_new_enemy : "Adds a new enemy that can be spawned by a trigger. " 
+[
+	enemy_type(integer) : "" : 0
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_control_prompt : "info_control_prompt" 
+[
+	action_display(string) : "" : ""
+	action_name(string) : "" : ""
+	context(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_destructive : "a panel you can destroy to open doors and do stuff" 
+[
+	target(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_electrical : "A panel you have to shoot with an electrical shot from the revolver to open doors and do stuff" 
+[
+	target(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_fuse : "fuse panel to activate portals" 
+[
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = trigger_electric_panel : "Only triggered by revolver special fire" 
+[
+	is_player_only(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	ms_timeout(float) : "" : "0.0"
+	trigger_once(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	trigger_target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = func_group : "Groups entities together for toggling later" 
+[
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = door_switch : "a standard door switch with trigger
+" 
+[
+	oneshot(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	target(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = door_switch_floor : "a standard floor based door switch with trigger
+" 
+[
+	target(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_portal_full_scene : "Adds a portal scene you can teleport to with visual frame" 
+[
+	enable_fuses(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	scene_path(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = trigger_area_arena : "Creates an area that requires all enemies to die before triggering leave." 
+[
+	name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = keycard_switch : "the box next to doors that actiavtes them via keycard" 
+[
+	keycard(string) : "" : ""
+	target(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_water_flowing : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it. This is the moving version of the water." 
+[
+	color(color255) : "" : "42 60 62"
+	direction(string) : "" : "0.0 0.0"
+	fog_color(color255) : "" : "0 0 0"
+	instant_kill(choices) : "" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	teleport_name(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = audio_slider : "Adds an audio node that follows a target path and slides along it to follow the player. Great for like rivers and shit. Add target nodes to go alongside the name key." 
+[
+	file_path(string) : "" : ""
+	name(string) : "" : ""
+]
+
+@SolidClass color(204 204 204) = info_area_secret_unlock : "Unlocks a secret" 
+[
+	secret_int(integer) : "" : 0
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_particle_loop : "info_particle_loop" 
+[
+	path(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = SecurityCamera : "A decorative security camera" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = destructable_prefab_crate : "destructable_prefab_crate" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_arcane : "enemy_arcane" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_drone : "enemy_drone" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_dynamite : "enemy_dynamite" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_flamethrower : "a flamehthrower robot " []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_gas : "enemy_gas" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_loot : "enemy_loot" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_melee : "enemy_melee" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_roomba : "enemy_roomba" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_shield : "enemy_shield" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_shooter : "enemy_shooter" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_spider_mine : "enemy_spider_mine" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_turret : "Adds an enemy turret to the game" 
+[
+	type(string) : "" : "MINIGUN"
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_adrenaline : "powerup_adrenaline" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_ammo_belt : "powerup_ammo_belt" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_arcane_chainsaw : "powerup_arcane_chainsaw" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_armor : "powerup_armor" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_bullet_bounce : "powerup_bullet_bounce" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_bullet_choke : "powerup_bullet_choke" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_revolver_storm : "powerup_revolver_storm" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_bush_1 : "decor_plant_bush_1" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_bush_2 : "decor_plant_bush_2" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_1 : "decor_plant_tropical_1" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_2 : "decor_plant_tropical_2" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_3 : "decor_plant_tropical_3" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_4 : "decor_plant_tropical_4" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_5 : "decor_plant_tropical_5" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_6 : "decor_plant_tropical_6" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_7 : "decor_plant_tropical_7" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_plant_tropical_8 : "decor_plant_tropical_8" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_small_tree_rt_1 : "decor_small_tree_rt_1" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_tree_rt_1 : "decor_tree_rt_1" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_tree_rt_2 : "decor_tree_rt_2" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_tree_rt_2_1 : "decor_tree_rt_2_1" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_tree_rt_3 : "decor_tree_rt_3" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_tree_rt_4 : "decor_tree_rt_4" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_ammo_permanent_revolver : "pickup_ammo_permanent_revolver" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_ammo_permanent_shotgun : "pickup_ammo_permanent_shotgun" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_ammo_revolver : "pickup_ammo_revolver" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_ammo_shotgun : "pickup_ammo_shotgun" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_computer_chip : "pickup_computer_chip" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_fuse : "pickup_fuse" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_keycard : "pickup_keycard" 
+[
+	type(string) : "" : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_medkit : "pickup_medkit" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_medkit_permanent : "pickup_medkit_permanent" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_revolver : "pickup_revolver" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_scrap : "pickup_scrap" []
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_shotgun : "pickup_shotgun" []
