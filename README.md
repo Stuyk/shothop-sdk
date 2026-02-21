@@ -6,7 +6,7 @@ This SDK contains everything you need to build custom levels for **Shothop**. We
 ## 1. Prerequisites
 
 * **Download TrenchBroom:** Get the latest version from [TrenchBroom.github.io](https://trenchbroom.github.io/).
-* **Install the SDK:** Unzip this folder to a permanent location on your drive (e.g., `C:/Modding/MyGame_SDK/`).
+* **Install the SDK:** Unzip this folder to a permanent location on your drive (e.g., `C:/Modding/Shothop/`).
 
 ---
 
