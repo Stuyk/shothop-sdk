@@ -36,6 +36,15 @@ This SDK contains everything you need to build custom levels for **Shothop**. We
 
 ---
 
+## 4. Documentation
+
+More detailed guides live in the [`docs/`](docs/) folder:
+
+* **[FGD Guide](docs/fgd_guide.md)** — how to place and wire up entities in TrenchBroom, plus a full reference of every Shothop entity and its properties.
+* **[Custom Maps](docs/custom_maps.md)** — where to put your finished `.map` files, and how to add a title, description, author and preview screenshot for the in-game Custom Levels browser.
+
+---
+
 The `.map` file will be utilized in the future for custom Shothop maps.
 
 ---
