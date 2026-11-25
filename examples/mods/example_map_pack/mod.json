@@ -1,0 +1,20 @@
+{
+  "id": "example_map_pack",
+  "name": "Example Map Pack",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "A sector with a hub and two levels linked by portals.",
+  "enabled": true,
+  "priority": 0,
+  "replace_music": false,
+  "sectors": [
+    {
+      "id": "example_pack",
+      "name": "Example Pack",
+      "levels": [
+        "example_pack_01",
+        "example_pack_02"
+      ]
+    }
+  ]
+}

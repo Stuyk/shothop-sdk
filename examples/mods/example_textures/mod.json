@@ -1,0 +1,8 @@
+{
+  "id": "example_textures",
+  "name": "Example Textures",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "A map built from the mod's own brush textures.",
+  "enabled": true
+}

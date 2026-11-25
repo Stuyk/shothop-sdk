@@ -1,0 +1,7 @@
+{
+  "title": "Example Single Map",
+  "description": "A single map with no mod around it. Kill the bots, grab the medkit, take the portal.",
+  "author": "Shothop SDK",
+  "version": "1.0.0",
+  "screenshot": "screenshot.png"
+}

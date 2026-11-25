@@ -1,0 +1,8 @@
+{
+  "id": "example_sounds",
+  "name": "Example Sounds",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "A map that plays the mod's own sounds by name.",
+  "enabled": true
+}

@@ -1,0 +1,8 @@
+{
+  "id": "example_tuning",
+  "name": "Example Tuning",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "Tougher shooters, harder-hitting hammers, bigger knockback. Turns off leaderboards while enabled.",
+  "enabled": true
+}

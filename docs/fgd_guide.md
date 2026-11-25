@@ -1,5 +1,9 @@
 # TrenchBroom + Shothop FGD Guide
 
+> **Making a map or mod?** Skip section 1. It's for people working on the game itself in Godot. Your setup is in the [README](../README.md). Sections 2 to 4 are what you want: how to wire entities together, and what every entity does.
+>
+> Entity names can change between game versions. `mod entities` lists the real ones for your installed game, and `mod check` catches old names in your maps.
+
 This game ships **one** FGD ("Shothop") built from FuncGodot entity resources living under
 [`trenchbroom/fgd/`](../../trenchbroom/fgd/). It currently defines **149 usable entity classes**
 (148 gameplay entities across `point/` and `solid/` folders, plus 1 `model_point`), assembled by

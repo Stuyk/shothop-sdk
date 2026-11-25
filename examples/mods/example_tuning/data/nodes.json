@@ -1,0 +1,6 @@
+{
+  "EnemyGeneric": {
+    "max_knockback_speed": 60.0,
+    "speed_knockback_decay": 10.0
+  }
+}

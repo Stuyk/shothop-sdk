@@ -1,51 +1,64 @@
+# Shothop SDK
 
-# 🛠️ Shothop Mapping SDK Setup Guide
+Everything you need to make maps and mods for **Shothop**.
 
-This SDK contains everything you need to build custom levels for **Shothop**. We use the **TrenchBroom** editor, a modern tool for Quake-style brush mapping.
+A Shothop mod is a folder. Maps, sounds, music, textures and a bit of JSON. No code, no engine, no build step. You drop the folder in, start the game, and play it.
 
-## 1. Prerequisites
+## Pick your path
 
-* **Download TrenchBroom:** Get the latest version from [TrenchBroom.github.io](https://trenchbroom.github.io/).
-* **Install the SDK:** Unzip this folder to a permanent location on your drive (e.g., `C:/Modding/Shothop/`).
+1. **I want to make a level.** Set up TrenchBroom below, then read [Maps](docs/maps.md).
+2. **I want a full mod.** Same setup, then do [Your first mod in 10 minutes](docs/quick_start.md), or copy one from [`examples/`](examples).
+3. **I want to tweak numbers.** Read [Tuning](docs/tuning.md). You don't even need TrenchBroom.
 
----
+## What's in here
 
-## 2. TrenchBroom Configuration
+| Folder | What it is |
+|---|---|
+| `Shothop/` | TrenchBroom game config and entity definitions (`Shothop.fgd`) |
+| `textures/` | Every built-in brush texture, so TrenchBroom can show them |
+| `trenchbroom/` | Models TrenchBroom uses to preview entities |
+| `docs/` | The guides |
+| `examples/` | A working example of every kind of mod. Copy one in and play it |
 
-1. Open **TrenchBroom**.
-2. Click on New Map
-3. Open Preferences...
-4. In the game presets on the left side, click the tiny folder icon to open where Trenchbroom stores custom games. It should open a folder.
-5. Copy the `Shothop` folder and paste it into the Trenchbroom's `games` folder.
-6. Reload Trenchbroom
-7. Open **Trenchbroom Again**
-8. Click New Map
-9. Click Open Preferences
-10. Click on Shothop, and set the Game Path to your unzipped SDK location
-11. Hit Apply, Ok
-12. Select Shophop on the Select Game Screen
-13. In the bottom right under `Mods` you'll see `Shothop` and `textures`. Enable both. `+`
+## Set up TrenchBroom (once)
 
----
+You need [TrenchBroom](https://trenchbroom.github.io/). It's free.
 
-## 3. Creating Your First Map
+1. Unzip this SDK somewhere it can stay, like `C:/Modding/ShothopSDK/`.
+2. Open TrenchBroom, click **New Map**, then **Open Preferences**.
+3. Click the small folder icon under the game list. It opens TrenchBroom's `games` folder.
+4. Copy this SDK's `Shothop` folder into that `games` folder.
+5. Restart TrenchBroom. It only looks for games on launch.
+6. **New Map**, then **Open Preferences**, click **Shothop**, and set **Game Path** to this SDK folder.
+7. Click **Apply**, then pick **Shothop** on the game screen.
+8. Bottom right, under **Mods**, enable both `Shothop` and `textures`.
 
-1. On the TrenchBroom Welcome Screen, click **"New Map"** and select your game profile.
-2. **Texture Loading:** Your textures should appear in the "Textures" browser tab on the right. If they don't, ensure your Game Path is set correctly to the SDK root.
-3. **Placing Entities:** Right-click in the 3D view to Create Entity. You will see game-specific objects (Player Starts, Enemies, Pickups) defined in our FGD.
+Textures now show in the texture browser, and right-clicking the 3D view gives you every Shothop entity.
 
----
+## The mod tools
 
-## 4. Documentation
+The game has a few terminal commands built in. They make a mod for you, check it for mistakes, and pack it up to share:
 
-More detailed guides live in the [`docs/`](docs/) folder:
+```
+shothop --headless -- mod new neon_pack "Neon Pack"
+shothop --headless -- mod check neon_pack
+shothop --headless -- mod zip neon_pack
+```
 
-* **[FGD Guide](docs/fgd_guide.md)** — how to place and wire up entities in TrenchBroom, plus a full reference of every Shothop entity and its properties.
-* **[Custom Maps](docs/custom_maps.md)** — where to put your finished `.map` files, and how to add a title, description, author and preview screenshot for the in-game Custom Levels browser.
+**Read [Mod tools](docs/cli.md) first.** It shows where the game lives on your machine and the exact command for your OS.
 
----
+## Guides
 
-The `.map` file will be utilized in the future for custom Shothop maps.
+| Guide | Read it when |
+|---|---|
+| [Your first mod in 10 minutes](docs/quick_start.md) | You're starting out |
+| [Mods](docs/mods.md) | You want the full mod folder and `mod.json` reference |
+| [Mod tools](docs/cli.md) | You want every terminal command |
+| [Maps](docs/maps.md) | You're building levels: metadata, screenshots, linking levels together |
+| [Sounds, music and textures](docs/assets.md) | You're adding your own files |
+| [Tuning](docs/tuning.md) | You want to change health, damage and other numbers |
+| [Troubleshooting](docs/troubleshooting.md) | Something doesn't show up or doesn't work |
+| [Entity reference](docs/fgd_guide.md) | You need what an entity does and its properties |
 
 ---
 

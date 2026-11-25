@@ -1,0 +1,9 @@
+{
+  "id": "example_music",
+  "name": "Example Music",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "Replaces the in-level playlist with the mod's own track.",
+  "enabled": true,
+  "replace_music": true
+}
