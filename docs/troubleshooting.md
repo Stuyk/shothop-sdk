@@ -43,12 +43,14 @@ Still stuck? The game writes everything to a log. `mod path` prints where it is.
 - The button stays locked until at least one of its levels has a map installed. `mod check` reports levels with no map.
 - Sector ids `alpha`, `bravo`, `charlie` and `delta` belong to the campaign and are ignored.
 
-## My replacement sound doesn't play
+## My replacement doesn't show up
 
 1. Restart the game. `replace/` only loads at startup.
 2. The file name has to match exactly. `mod sounds <part of the name>` shows the real names, and `mod check` flags files that match nothing.
-3. Use `.ogg`. `.wav` and `.mp3` miss sounds the game loads early.
-4. Hearing the original some of the time? There are more variations (`_b`, `_c` ...). Replace them all.
+3. Sounds: use `.ogg`. `.wav` and `.mp3` miss sounds the game loads early.
+4. Textures look stretched or blurry? Match the original's size. `mod check` tells you the size it expects.
+5. Hearing the original some of the time? There are more variations (`_b`, `_c` ...). Replace them all.
+6. Changed the wrong copy, or too many? A plain name hits every file with that name. Mirror the game's folder path to hit just one ([how](assets.md#one-file-or-every-file-with-that-name)).
 
 ## My tuning does nothing
 
@@ -58,7 +60,9 @@ Still stuck? The game writes everything to a log. `mod path` prints where it is.
 
 ## No leaderboard scores or achievements
 
-That's tuning. Any `data/game_const.json` or `data/nodes.json` in an enabled mod turns off leaderboards, ghosts and achievements. `mod list` says so at the bottom. Run `mod disable <id>` for clean runs.
+That's tuning. Any `data/game_const.json` or `data/nodes.json` in an enabled mod turns off leaderboards, ghosts and achievements. The main menu names the mod at the top, and so does `mod list`. Run `mod disable <id>` for clean runs.
+
+Sound and texture replacements never do this.
 
 Custom levels never post Steam leaderboard scores. Only the campaign does.
 

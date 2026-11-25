@@ -27,7 +27,7 @@ mods/
     audio/       sounds your map entities use by name
     music/       tracks for the in-level playlist
     textures/    brush textures for your maps
-    replace/     .ogg files named like built-in sounds, to swap them
+    replace/     sounds and textures named like built-in ones, to swap them
     data/
       game_const.json   number changes (see Tuning)
       nodes.json        per-class property changes (see Tuning)
@@ -82,16 +82,27 @@ The campaign is split into sectors: Alpha, Bravo, Charlie. A sector in your mod 
 
 You can put more than one sector in a mod.
 
-## What's allowed to change
+## What gets you flagged
 
-| Your mod has | Ghosts and achievements |
+One rule: **any gameplay tuning turns off Steam leaderboards, ghost saving and achievements.** Everything else is fair game.
+
+| Your mod has | Leaderboards, ghosts, achievements |
 |---|---|
-| Maps, sounds, music, textures, sound replacements | **Still on** |
-| Anything in `data/game_const.json` or `data/nodes.json` | **Off** while the mod is enabled, along with Steam leaderboards |
+| Maps, sounds, music, textures | **Still on** |
+| Sound and texture replacements (`replace/`) | **Still on** |
+| Anything in `data/game_const.json` | **Off** |
+| Anything in `data/nodes.json` | **Off** |
 
-That's on purpose. A campaign run with 1 HP enemies isn't the same run, so it doesn't go on the board.
+"Anything" means anything. One key counts, even one the game ignores.
 
-Steam leaderboards only cover the campaign, so your own levels never post scores there. Ghosts of your best runs still save for them.
+And the game says so. With tuning enabled:
+
+- The **main menu** shows `MODDED: <mod names> change gameplay. Leaderboards, ghosts and achievements are off.`
+- The **round results screen** shows `MODDED RUN: <mod names> changed gameplay. This run doesn't count...` and hides the leaderboard button.
+
+Nobody gets a tuned run onto the board by accident. Run `mod disable <id>` for clean runs.
+
+Steam leaderboards only cover the campaign, so your own levels never post scores there anyway. Ghosts of your best runs still save for them, as long as no tuning is on.
 
 Your mod can't change the campaign either. The campaign levels, their sectors and your progress always come from the game.
 
@@ -101,7 +112,7 @@ Your mod can't change the campaign either. The campaign levels, their sectors an
 |---|---|
 | A map | The next time you load it |
 | Sounds, music, textures | **REFRESH** in CUSTOM MAPS |
-| `replace/` | Restarting the game |
+| `replace/` (yours or a mod's) | Restarting the game |
 | `mod.json`, sectors, a new mod | **REFRESH** in CUSTOM MAPS |
 | `data/game_const.json`, `data/nodes.json` | Restarting the game |
 

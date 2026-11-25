@@ -40,37 +40,64 @@ ffmpeg -i input.wav -af loudnorm=I=-20:TP=-1.5 -c:a libvorbis -q:a 6 output.ogg
 
 Change `-20` to the target from the table.
 
-## Replace built-in sounds
+## Replace built-in sounds and textures
 
-Swap any of the game's own sounds: shotgun blasts, revolver shots, footsteps, UI clicks, enemy noises, anything.
+Swap any of the game's own files: shotgun blasts, footsteps, UI clicks, wall textures, weapon skins, robots, anything. It works across the whole game, campaign included.
 
-1. Find the sound's name:
+There are two places to put replacements:
+
+| Folder | Use it for |
+|---|---|
+| `replace/` inside your mod | Replacements you share as part of a mod |
+| `replace/` next to `mods/` and `maps/` | Your own tweaks for the whole game, no mod needed. **Wins over every mod** |
+
+`mod path` prints both.
+
+### How
+
+1. Find the name:
 
    ```
    shothop --headless -- mod sounds shotgun
+   shothop --headless -- mod textures brass
    ```
 
    ```
    sfx_shotgun_shot_a                         sfx/shotgun
-   sfx_shotgun_shot_b                         sfx/shotgun
-   ...
+   base_brass                           assets/models/pickups/revolver_ammo, assets/models/pickups/shotgun_ammo_white
    ```
 
-2. Save your sound as **`.ogg`** with exactly that name in your mod's `replace/` folder, like `replace/sfx_shotgun_shot_a.ogg`. Subfolders are fine.
+2. Drop your file in a `replace/` folder with exactly that name: `replace/sfx_shotgun_shot_a.ogg`, `replace/CNAL11_1.png`.
 3. Restart the game. Replacements load once at startup.
 
-That's it. Every place the game plays that sound now plays yours.
+Every place the game uses that file now uses yours.
 
-- **Use `.ogg`.** `.wav` and `.mp3` only partly work here. Some sounds load before mods do and keep the original.
+### One file or every file with that name
+
+A plain name replaces **every** built-in file with that name. `replace/base_brass.png` swaps the brass on both ammo pickups.
+
+Want just one? Copy the game's folder path:
+
+```
+replace/assets/models/pickups/revolver_ammo/base_brass.png
+```
+
+Now only the revolver ammo changes. Any other subfolders (`replace/shotgun/...`) are just for keeping things tidy and match by name.
+
+### Rules
+
+- **Sounds: use `.ogg`.** `.wav` and `.mp3` only partly work. Some sounds load before mods do and keep the original.
+- **Textures: same size as the original.** A different size gets stretched to fit. `mod check` tells you when sizes don't match.
+- **Model skins have to match the model's UV layout.** Same size, same layout, your colours.
 - **Replace every variation.** Lots of sounds come in sets (`_a` to `_e`) and the game picks one at random. Replace only `_a` and you hear yours one shot in five.
-- **Keep it about as loud as the original.** Sound effects sit around -20 LUFS.
-- Looping sounds keep looping. The game keeps the original's loop settings.
-- Two mods replacing the same sound? Higher `priority` wins.
-- `mod sounds` marks every sound a mod replaced with `(replaced)`. `mod check` flags files that don't match any built-in name.
+- **Keep sounds about as loud as the original.** Sound effects sit around -20 LUFS.
+- Looping sounds keep looping.
+- Two mods replacing the same file? Higher `priority` wins. Your own `replace/` folder beats them all.
+- `mod sounds` and `mod textures` mark replaced files with `(replaced)`. `mod check` flags files that don't match any built-in name.
 
-Replacements are cosmetic, so leaderboards, ghosts and achievements stay on.
+**Replacements are cosmetic, so leaderboards, ghosts and achievements stay on.**
 
-See [`examples/mods/example_weapon_sounds`](../examples/mods/example_weapon_sounds): sci-fi blasters for the shotgun and revolver.
+Examples: [`example_weapon_sounds`](../examples/mods/example_weapon_sounds) (shotgun and revolver shots) and [`example_texture_swap`](../examples/mods/example_texture_swap) (two wall textures, everywhere).
 
 ## Music
 

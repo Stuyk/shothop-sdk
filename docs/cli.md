@@ -35,17 +35,17 @@ Each command takes a few seconds, since it's the whole game starting up.
 | Command | What it does |
 |---|---|
 | `mod help` | Lists every command |
-| `mod path` | Prints where your mods, maps and logs live |
+| `mod path` | Prints where your mods, maps, replace folder and logs live |
 | `mod new <id> [name]` | Makes a mod with a starter map you can play right away |
 | `mod list` | Lists installed mods and whether they loaded |
-| `mod check [id]` | Checks a mod, or every mod, for mistakes |
+| `mod check [id\|maps\|replace]` | Checks a mod, your maps folder, your replace folder, or everything |
 | `mod enable <id>` | Turns a mod on |
 | `mod disable <id>` | Turns a mod off without deleting it |
 | `mod zip <id> [out.zip]` | Packs a mod into one zip to share |
 | `mod keys [filter]` | Lists every tuning key and its default |
 | `mod classes [filter]` | Lists class names for `data/nodes.json` |
 | `mod props <Class>` | Lists one class's properties and defaults |
-| `mod textures [filter]` | Lists built-in brush texture names |
+| `mod textures [filter]` | Lists built-in textures with their folder, marks ones being replaced |
 | `mod sounds [filter]` | Lists built-in sounds with their folder, marks ones a mod replaced |
 | `mod entities [filter]` | Lists entity names your maps can use |
 
@@ -102,7 +102,7 @@ What it checks:
 6. Each map has an `info_player_spawn`.
 7. Every level listed in a sector has a map.
 8. Music files can be read.
-9. Every file in `replace/` matches a built-in sound, and the replacement took.
+9. Every file in `replace/` matches a built-in sound or texture, the replacement took, and texture sizes match.
 10. Tuning keys and values are real and the right type.
 
 Leave out the id to check every mod at once. It exits with code 1 when it finds errors, so you can use it in scripts.
@@ -143,5 +143,5 @@ CONTROLLED_SHOOTER_HEALTH                     10.0   (mods set 20.0)
 ## Other things you can do
 
 - `mod disable neon_pack` before you test something without it. `mod enable neon_pack` brings it back.
-- `mod list` after installing someone's mod, to make sure it loaded.
+- `mod list` after installing someone's mod, to make sure it loaded. The bottom line says if any tuning is turning leaderboards off.
 - `mod path` when you can't find your mods folder.

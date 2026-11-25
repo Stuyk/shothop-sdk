@@ -1,0 +1,8 @@
+{
+  "id": "example_texture_swap",
+  "name": "Example Texture Swap",
+  "version": "1.0.0",
+  "author": "Shothop SDK",
+  "description": "Replaces two built-in brush textures everywhere they're used, campaign included.",
+  "enabled": true
+}

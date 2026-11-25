@@ -12,6 +12,7 @@ One working example for every kind of mod. Each one passes `mod check` and loads
 | [`mods/example_sounds`](mods/example_sounds) | Sounds | Your own ambient sound and level start sound, played by name |
 | [`mods/example_music`](mods/example_music) | Music | Replacing the in-level playlist with your own track |
 | [`mods/example_weapon_sounds`](mods/example_weapon_sounds) | Sound replacement | Swapping the shotgun and revolver shots for your own |
+| [`mods/example_texture_swap`](mods/example_texture_swap) | Texture replacement | Swapping two built-in wall textures across the whole game |
 | [`mods/example_tuning`](mods/example_tuning) | Tuning | Changing enemy health, damage, difficulty and knockback |
 
 ## Install them
@@ -28,7 +29,9 @@ Check they're happy:
 shothop --headless -- mod check
 ```
 
-**`example_tuning` turns off leaderboards, ghosts and achievements while it's enabled.** The other examples don't. Run `mod disable example_tuning` when you're done playing with it.
+**`example_tuning` turns off leaderboards, ghosts and achievements while it's enabled.** The main menu tells you. The other examples don't. Run `mod disable example_tuning` when you're done playing with it.
+
+**`example_texture_swap` changes walls in the campaign too.** Run `mod disable example_texture_swap` to get them back.
 
 **`example_music` replaces the game's music.** Run `mod disable example_music` to get the soundtrack back.
 
