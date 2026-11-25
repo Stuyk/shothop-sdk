@@ -70,22 +70,55 @@ points at `trenchbroom/textures` and the shared FGD, so you shouldn't need to to
 
 ## 2. Placing and wiring entities in TrenchBroom
 
+### Entity names: `<category>_<name>`
+
+Every Shothop entity is named `<category>_<name>`. TrenchBroom's entity browser groups entities by
+the word before the first underscore, so each category gets its own folder. Categories:
+
+| Category | What lives there |
+|---|---|
+| `area` | Brush volumes that react when something enters (`area_trigger`, `area_killbox`, `area_weather`) |
+| `audio` | Sound emitters and ambient areas |
+| `decor` | Plants, trees, props, graffiti, security cameras |
+| `destructable` | Things that break |
+| `display` | Screens, posters, signs |
+| `effect` | Explosions and particles |
+| `enemy` | Enemy spawners. Enemies only enter a map through these, fired by a trigger |
+| `info` | Map setup: player spawn, environment, map data, cinematic cameras |
+| `interact` | Switches, keycard switches, panels, press-E triggers |
+| `light` | Lights and `light_group_switch` |
+| `logic` | Invoke plumbing: counter, delay, gate, random, repeater, sequence, relays |
+| `lounge` | Hub-only terminals, radio and screens |
+| `marker` | Path, target and teleport markers |
+| `mover` | Moving brushes: elevators, loops, rotators, crushers |
+| `pickup` / `powerup` | Collectibles and weapon upgrades |
+| `portal` | Level portals |
+| `trap` | Hazards and traps, including fixed turrets (`trap_turret`) |
+| `tutorial` | Tutorial markers, screens, control prompts and the training dummy |
+| `water` | Water brushes |
+| `world` | Special brushes: ice, crystal, windows, glass, player clip, footstep surfaces |
+
+`func_group`, `worldspawn`, `func_geo`, `func_detail`, `func_detail_illusionary` and
+`func_illusionary` are TrenchBroom / FuncGodot built-ins and keep their names.
+
+
+
 ### 2.1 Point entities vs. solid (brush) entities vs. model-point entities
 
 The FGD has three kinds of classes, and TrenchBroom treats each differently:
 
-- **Point entities** (`point/...`, e.g. `pickup_medkit`, `light_large`, `trigger_sound`) — a single
+- **Point entities** (`point/...`, e.g. `pickup_medkit`, `light_large`, `audio_sound`) — a single
   origin with no geometry of their own. Place with the **Entity Browser** (View → Entity Browser, or
   the icon in the top toolbar): drag the class onto the 3D/2D view, or select it and press Enter.
   Some point classes render a preview model in the editor (anything backed by a `scene_file`, e.g.
   `pickup_medkit`, most `enemy_*`, most `decor_*`); others show as a plain bounding-box gizmo
-  (anything without a scene, e.g. `info_marker_target`, `trigger_sound`).
-- **Solid entities** (`solid/...`, e.g. `trigger_area`, `func_group`, `destructable_dynamic`) — you build
+  (anything without a scene, e.g. `marker_target`, `audio_sound`).
+- **Solid entities** (`solid/...`, e.g. `area_trigger`, `func_group`, `destructable_dynamic`) — you build
   one or more brushes first (Brush Tool, or drag from a primitive), select them, then right-click →
   **Move Brushes to Entity → <classname>** (or press the assigned key after selecting the class in the
   Entity Browser while brushes are selected). The brush geometry itself becomes the entity's shape/trigger
   volume/collision.
-- **Model-point entities** (`model_point/...`, currently just `hazard_train`) — like point entities, but
+- **Model-point entities** (`model_point/...`, currently just `trap_train`) — like point entities, but
   are explicitly modeled around a moving 3D model rather than a static prop.
 
 ### 2.2 The Entity Property editor
@@ -115,60 +148,97 @@ Everything in this FGD communicates through three string properties, each with a
 Each concept also has a matching Godot group that invokable/waypoint entities self-register into,
 and that `Utility.find_target`/`find_targets` searches: entities holding a `uid` join either the
 `"uid_to_invoke"` group (if they can be triggered) or the `"uid_to_move_to"` group (if they're a
-movement waypoint, e.g. `info_marker_target`).
+movement waypoint, e.g. `marker_target`).
 
 Example, straight from `trenchbroom/maps/dev_sandbox.map`:
 
 ```
 // A door switch that invokes something with uid "switch_test" when used
-"classname" "door_switch"
+"classname" "interact_switch"
 "origin" "1256 -56 88"
 "angle" "180"
 "uid_to_invoke" "switch_test"
 ```
 
 Give the door/light/trigger you want opened a matching `uid` of `switch_test`, and the switch will
-fire it. This same pattern powers `keycard_switch`, `trigger_area`, `trigger_elevator`,
-`trigger_move_brush`, and most `trap_*` / `trigger_*` entities — look for `uid_to_invoke` on the
+fire it. This same pattern powers `interact_keycard_switch`, `area_trigger`, `mover_elevator`,
+`mover_brush`, and most `trap_*`, `area_*`, `interact_*` and `logic_*` entities — look for `uid_to_invoke` on the
 "cause" and `uid` on the "effect."
+
+Event hooks use the same pattern with a suffix: `uid_to_invoke_on_<event>` fires the target each
+time that event happens. `enemy_spawner` has `uid_to_invoke_on_spawn` (per enemy spawned)
+and `uid_to_invoke_on_death` (per spawned enemy killed). Chain a hook into `logic_counter` to fire
+something once after N events:
+
+```
+// Spawner: 5 enemies total, each death bumps the counter
+"classname" "enemy_spawner"
+"max_lifetime_units" "5"
+"uid_to_invoke_on_death" "arena_kills"
+
+// Counter: fires "arena_door" once, on the 5th death
+"classname" "logic_counter"
+"uid" "arena_kills"
+"required_count" "5"
+"uid_to_invoke" "arena_door"
+```
+
+Difficulty adds bonus units to `max_lifetime_units`, so a fixed `required_count` can be reached
+before the spawner finishes on Hardcore. Set `required_count` for the lowest difficulty, or gate on
+something else when every spawned enemy must die.
+
+Logic blocks (point entities, all invoked by `uid`, all chainable):
+
+| Entity | Does | Key properties |
+|---|---|---|
+| `logic_counter` | Fires once after N invokes | `required_count`, `uid_to_invoke_on_step`, `reset_after_fire` |
+| `logic_delay` | Fires N seconds after invoke | `delay`, `cancel_on_reinvoke` |
+| `logic_sequence` | Fires the next uid in a list per invoke | `uids_to_invoke` (comma list), `loop` |
+| `logic_random` | Fires one random uid from a list | `uids_to_invoke`, `no_repeat` |
+| `logic_repeater` | Fires every N seconds; invoke toggles | `interval`, `enabled`, `fire_on_enable`, `max_fires` |
+| `logic_gate` | Passes invokes through only while open | `uid_open`, `uid_close`, `uid_toggle`, `start_open`, `close_after_pass` |
+| `light_group_switch` | Switches lights sharing a `light_group` | `light_group`, `mode` (0 toggle, 1 on, 2 off, 3 flicker), `fade_time` |
+
+Lights (`light_tiny` ... `light_xlarge`) take `light_group` and `start_off`. A light switched fully
+off is hidden, so it costs no shadow pass.
 
 ### 2.4 Worked example: a keycard-gated door (from the sandbox map)
 
 ```
-"classname" "keycard_switch"
+"classname" "interact_keycard_switch"
 "origin" "1256 424 104"
 "angle" "180"
 "keycard" "BLUE"
 "uid_to_invoke" "bluedoor"
 ```
 
-1. Place a `keycard_switch` point entity next to the door, set `keycard` to `BLUE` (must match a
+1. Place an `interact_keycard_switch` point entity next to the door, set `keycard` to `BLUE` (must match a
    `pickup_keycard` with `type = BLUE` somewhere earlier in the level) and `uid_to_invoke` to a name
    of your choosing, e.g. `bluedoor`.
-2. Build the door as a brush, convert it to a `trigger_move_brush` (or `trigger_elevator`, etc.),
+2. Build the door as a brush, convert it to a `mover_brush` (or `mover_elevator`, etc.),
    and set its `uid` to `bluedoor`.
 3. Player picks up the blue keycard → interacts with the switch → the door entity with uid `bluedoor` moves.
 
 ### 2.5 Worked example: an elevator
 
 ```
-"classname" "trigger_elevator"
+"classname" "mover_elevator"
 "elevator_name" "test_elevator"
 "uid_to_move_to" "test_elevator"
 "speed" "2"
 "pause_at_top" "3000"
 ```
 
-1. Build the elevator platform as a brush and convert to `trigger_elevator`.
-2. Place an `info_marker_target` at the top stop, and give it a `uid` matching the elevator's
+1. Build the elevator platform as a brush and convert to `mover_elevator`.
+2. Place a `marker_target` at the top stop, and give it a `uid` matching the elevator's
    `uid_to_move_to` value.
 3. Set `speed` (units/sec) and `pause_at_top` (ms) to taste. The elevator moves to the marker when the
    player steps on, and returns when they leave — unless `is_remote_triggered` is enabled, in which case
-   it only moves when something else (a switch, trigger_area) fires its `uid`.
+   it only moves when something else (a switch, area_trigger) fires its `uid`.
 
 ### 2.6 Enemy type numbers
 
-Several trigger entities (`trigger_new_enemy`, `trigger_enemy_spawner`, `trigger_enemy_arena_spawner`)
+Several trigger entities (`enemy_spawn`, `enemy_spawner`, `enemy_arena_spawner`)
 take a numeric `enemy_type` / `rng_enemy_pool` instead of a string. The mapping is:
 
 | # | Enemy | # | Enemy |
@@ -182,6 +252,9 @@ take a numeric `enemy_type` / `rng_enemy_pool` instead of a string. The mapping 
 | 13 | Turret (standing) | 14 | Mine Bot |
 | 15 | Minigun | 16 | Knife |
 | 17 | Rocket Bot | 18 | Hammer |
+
+13 (turret) only works with `enemy_spawn`. `enemy_spawner` and `enemy_arena_spawner` skip it; place a
+`trap_turret` instead.
 
 ## 3. Category walkthroughs
 
@@ -202,19 +275,27 @@ Drop-in point entities, no brush needed. Most have zero required properties (`pi
 `pickup_revolver`) — just place and go. A few need one property set: `pickup_keycard` needs `type`
 (`RED`/`BLUE`), several powerups take an optional `quad` bool for a 4x variant.
 
-### Enemies (`point/enemy`)
-Place directly; most have no required properties. `enemy_turret` needs `type` (e.g. `MINIGUN`,
-`SHOTGUN`). Pair with `trigger_area` or `trigger_new_enemy` if you want spawn-on-trigger rather than
-spawn-on-load.
+### Enemies (spawned by triggers only)
+Enemies are never placed directly; there are no placeable enemy entities. Every fight starts from a
+trigger:
+
+- `enemy_spawn`: spawns one `enemy_type` each time it's invoked.
+- `enemy_spawner`: spawns `enemy_type` on a timer with concurrent and lifetime caps. Usually placed
+  with `enabled` 0 and woken by a trigger. Has `uid_to_invoke_on_spawn` / `uid_to_invoke_on_death`.
+- `enemy_arena_spawner`: random or scripted waves; fires `uid_to_invoke` when cleared.
+
+Wire them from a skip-textured `area_trigger` (`is_player_only` 1, `trigger_once` 1) whose
+`uid_to_invoke` matches their `uid`. Fixed turrets are traps (`trap_turret`, needs `type`, e.g.
+`MINIGUN`), and the training target is `tutorial_dummy`.
 
 ### Traps & panels (`point/traps`, `point/panels`)
 Environmental hazards/interactables. `trap_bullet` / `trap_rocket`: leave `uid` empty to fire forever
-automatically, or set a `uid` so a trigger can fire it on demand. `panel_electrical` specifically
+automatically, or set a `uid` so a trigger can fire it on demand. `interact_panel_electrical` specifically
 requires the player's revolver alt-fire (electric shot) to activate — don't wire it to a generic trigger
 expecting normal damage.
 
 ### Switches (`point/switches`)
-`door_switch` (wall-mounted), `door_switch_floor` (floor plate), `keycard_switch` (needs matching
+`interact_switch` (wall-mounted), `interact_floor_switch` (floor plate), `interact_keycard_switch` (needs matching
 `pickup_keycard`). All fire via `uid_to_invoke`.
 
 ### Triggers, point flavor (`point/triggers`)
@@ -222,7 +303,7 @@ Fire-and-forget logic nodes with no brush volume — sounds, explosions, scene l
 screens. Reference by `uid`, fired by an area/switch pointing `uid_to_invoke` at that uid.
 
 ### Destructables (`point/destructables`, `solid/destructable`)
-Two flavors: prefab point entities (`destructable_prefab_vent` — just
+Two flavors: prefab point entities (`destructable_vent` — just
 place them) and brush-based (`destructable_light`,
 `destructable_dynamic`, `destructable_vending_machine` — build the brush shape
 first, then convert). `destructable_dynamic` additionally takes a `destruction_mode` enum controlling
@@ -233,260 +314,295 @@ Pure set dressing — plants, trees, alarm lights, security cameras, fireflies. 
 properties; place and forget.
 
 ### Audio (`point/audio`, `solid/audio`)
-`audio_ambient_sound` is a point entity that plays positional 3D looping background audio under the `ambience` bus, automatically searching the audio file tree by file name (`sound_name`). `audio_loop` for a fixed-position ambient loop (`path` must be a full `res://assets/audio/...ogg` path). `audio_attached` attaches 3D audio to a moving brush or target node. `audio_slider` follows an `info_marker_path` sequence — good for moving-water sound sources. `audio_ambient_area` is brush-based, playing from a comma-separated list of ambient sound names.
+`audio_ambient_sound` is a point entity that plays positional 3D looping background audio under the `ambience` bus, automatically searching the audio file tree by file name (`sound_name`). `audio_loop` for a fixed-position ambient loop (`path` must be a full `res://assets/audio/...ogg` path). `audio_attached` attaches 3D audio to a moving brush or target node. `audio_slider` follows a `marker_path` sequence — good for moving-water sound sources. `audio_ambient_area` is brush-based, playing from a comma-separated list of ambient sound names.
 
 ### Areas & volumes (`solid/info`, `solid/triggers`)
-Build a brush, convert to class. Covers water/fluid hazards (`info_water_transparent`,
-`info_water_flowing`, `info_dangerous_fluid`), fog volumes (`info_area_fog_volume` — exposed in the FGD
-as `info_fog_volume`), hurtboxes, achievement/secret unlocks, weather zones, and the generic
-`trigger_area` used everywhere for gameplay logic (see 2.3–2.4 above).
+Build a brush, convert to class. Covers water/fluid hazards (`water_transparent`,
+`water_flowing`, `area_dangerous_fluid`), hurtboxes, achievement/secret unlocks, weather zones, and the generic
+`area_trigger` used everywhere for gameplay logic (see 2.3–2.4 above).
 
 ### Moving brushes & platforms (`solid/triggers`, `solid/platforms`)
-`trigger_move_brush` (one-shot or toggleable move), `trigger_looping_moveable_brush` /
-`trigger_looping_moveable_smooth_brush` (repeat forever), `trigger_elevator` (player-riding platform),
-`platform_rotate_x` / `platform_rotate_y` / `platform_rotate_z` (continuous rotation, no trigger needed — `speed`, `direction`),
-`platform_crusher` (configurable lethal crushing block, no trigger needed).
+`mover_brush` (one-shot or toggleable move), `mover_loop` /
+`mover_loop_smooth` (repeat forever), `mover_elevator` (player-riding platform),
+`mover_rotate_x` / `mover_rotate_y` / `mover_rotate_z` (continuous rotation, no trigger needed — `speed`, `direction`),
+`mover_crusher` (configurable lethal crushing block, no trigger needed).
 
 ### Model-point (`model_point`)
-`hazard_train` — a point entity backed by a moving model rather than a static prop; give it a `uid_to_move_to`
-pointing at an `info_marker_path` or `info_marker_target` sequence to define its route.
+`trap_train` — a point entity backed by a moving model rather than a static prop; give it a `uid_to_move_to`
+pointing at a `marker_path` or `marker_target` sequence to define its route.
 
-## 4. Full entity reference (149 classes)
+## 4. Full entity reference (163 classes)
 
-Grouped by folder to match `trenchbroom/fgd/`. Click through to a `.tres` file for the exact property
-list and defaults (also visible live in TrenchBroom's Entity Inspector).
+Grouped by category, the same folders TrenchBroom shows. Open the entity's `.tres` under
+`trenchbroom/fgd/` (or check TrenchBroom's Entity Inspector) for every property and default.
 
-### model_point
+### area
 
-| Classname | Purpose |
-|---|---|
-| `hazard_train` | Moving train hazard that follows a target path or marker. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `area_achievement_unlock` | brush | Unlocks a Steam/in-game achievement (`achievement_name`) on entry. |
+| `area_arena` | brush | Requires all enemies inside to die before firing its `uid_to_invoke` on exit. |
+| `area_dangerous_fluid` | brush | Acid/lava/arctic hazard (`fluid_type` 0=acid/1=lava/2=arctic); `instant_kill` toggle, `enable_sound` toggle, optional `teleport_name` respawn. |
+| `area_electric_panel` | brush | Like `area_trigger`, but only activates on the revolver's electric special-fire. |
+| `area_hurtbox` | brush | Generic damage/effect volume for hazards and traps. |
+| `area_jump_pad` | brush | Launches entities that touch it (`jump_force`). |
+| `area_killbox` | brush | Lethal trigger volume that instantly kills the player and removes all their speed and momentum upon contact. |
+| `area_remove_ammo` | brush | Strips ammo on entry (pairs with `logic_remove_ammo` logic). |
+| `area_remove_weapons` | brush | Removes both weapons and all ammo when the player enters, then deletes itself. |
+| `area_secret_unlock` | brush | Unlocks a secret by `secret_int` id on entry. |
+| `area_toggle_bool` | brush | Sets a named save-state boolean to true on entry (auto-saves). |
+| `area_trigger` | brush | General-purpose trigger volume; `is_button`/`is_player_only`/`keycard`/`ms_timeout`/`trigger_once`/`uid_to_invoke`/`emit_bus`. See 2.3–2.4. |
+| `area_weather` | brush | Sets local weather (`weather_type`: 0 none / 1 rain / 2 snow / 3 ash / 4 sandstorm). |
 
-### point/audio
+### audio
 
-| Classname | Purpose |
-|---|---|
-| `audio_ambient_sound` | Positional 3D ambient audio point player with recursive filename search under the ambience bus. |
-| `audio_attached` | 3D audio player that attaches and follows a named target node at runtime. |
-| `audio_loop` | Positional 3D audio loop that plays continuously on map load, with distance falloff. |
-| `audio_slider` | Audio node that follows a named path and slides along it (e.g. rivers). |
+| Classname | Type | Purpose |
+|---|---|---|
+| `audio_ambient_area` | brush | Plays one of a comma-separated `ambient_names` list to anything inside the brush volume. |
+| `audio_ambient_sound` | point | Positional 3D ambient audio point player with recursive filename search under the ambience bus. |
+| `audio_attached` | point | 3D audio player that attaches and follows a named target node at runtime. |
+| `audio_loop` | point | Positional 3D audio loop that plays continuously on map load, with distance falloff. |
+| `audio_room_tone` | brush | Fades in looping ambient audio (`audio_name`) on the ambience bus when the player enters the brush volume, and fades out on exit (`fade_time`, `volume_db`, `pitch_scale`). |
+| `audio_slider` | point | Audio node that follows a named path and slides along it (e.g. rivers). |
+| `audio_sound` | point | Plays `audio_path` (2D or 3D) when its `uid` is fired; supports `ms_delay`. |
 
-### point/decor
+### decor
 
-| Classname | Purpose |
-|---|---|
-| `SecurityCamera` | Decorative security camera. |
-| `alarm_light` | Rotating industrial sweep alarm beacon, toggleable. |
-| `decor_fireflies` | Ambient flying bug swarm. |
-| `decor_plant_bush_1` / `decor_plant_bush_2` | Decorative ground-cover bush. |
-| `decor_plant_tropical_1`–`8` | Decorative tropical plant instances. |
-| `decor_small_tree_rt_1` | Small rotating decorative tree. |
-| `decor_tree_rt_1` / `_2` / `_2_1` / `_3` / `_4` | Rotating decorative trees (foliage/light cover). |
-| `destructable_fan` | Destructible spinning ceiling fan (`spin_speed`, `uid_to_invoke`). |
+| Classname | Type | Purpose |
+|---|---|---|
+| `decor_cat` | point | A decorative cat model |
+| `decor_fireflies` | point | Ambient flying bug swarm. |
+| `decor_graffiti` | brush | Wall graffiti projection brush (`flip_x`). Automatically selects graffiti texture (0-17) based on brush world position; non-destructible; avoids decal limits (32 max). |
+| `decor_plant_bush_1` | point | Decorative bush used for ground cover and scene composition. |
+| `decor_plant_bush_2` | point | Decorative bush used for ground cover and scene composition. |
+| `decor_plant_tropical_1` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_2` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_3` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_4` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_5` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_6` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_7` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_plant_tropical_8` | point | Decorative tropical plant instance used for level decoration and atmosphere. |
+| `decor_security_camera` | point | Decorative security camera. |
+| `decor_small_tree_rt_1` | point | Small rotating decorative tree. |
+| `decor_tree_rt_1` | point | Rotating tree instance used as decorative foliage and light cover in levels. |
+| `decor_tree_rt_2` | point | Rotating tree instance used as decorative foliage and light cover in levels. |
+| `decor_tree_rt_2_1` | point | Rotating tree decorative instance used for foliage and occlusion. |
+| `decor_tree_rt_3` | point | Rotating tree instance used as decorative foliage and light cover in levels. |
+| `decor_tree_rt_4` | point | Rotating tree instance used as decorative foliage and light cover in levels. |
+| `decor_vegetation_bush` | point | Vegetation bush. Automatically selects one of 8 bush models (tree_pack/bushXX) based on world position, so placement is deterministic across builds. |
+| `decor_vegetation_tree` | point | Vegetation tree. Automatically selects one of 36 tree models (tree_pack/treeXX) based on world position, so placement is deterministic across builds. |
+| `decor_waving_guy` | point | A tall, slender humanoid waving guy silhouette |
 
-### point/destructables
+### destructable
 
-| Classname | Purpose |
-|---|---|
-| `destructable_prefab_vent` | Breakable vent prefab. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `destructable_barrel` | brush | Explosive/breakable barrel (`godmode` makes it indestructible but still explodes when hit). |
+| `destructable_control_panel` | brush | Destructible control panel; fires `uid_to_invoke` when broken. |
+| `destructable_dynamic` | brush | Generic destructible; `destruction_mode` = 0 default / 1 charged-melee-only / 2 ground-slam-only / 3 destroy-on-bump. Pieces/audio follow the texture prefix — glass windows are `destructable_dynamic` with a `G*` texture (glass impact FX + shatter overlay) and `freeze 1`. |
+| `destructable_fan` | point | Destructible spinning ceiling fan (`spin_speed`, `uid_to_invoke`). |
+| `destructable_light` | brush | Breakable light fixture. |
+| `destructable_vending_machine` | brush | Destructible vending machine that spits out health/armor pickups. |
+| `destructable_vent` | point | Breakable vent prefab. |
 
-### point/enemy
+### display
 
-| Classname | Purpose |
-|---|---|
-| `enemy_achilles` | Light melee enemy that patrols and collides with the player. |
-| `enemy_arcane` | Special enemy using magical projectiles/unique behaviors. |
-| `enemy_drone` | Flying enemy that maneuvers to pursue/attack. |
-| `enemy_dynamite` | Explosive enemy, detonates after delay or on contact. |
-| `enemy_flamethrower` | Flamethrower robot. |
-| `enemy_gas` | Emits poisonous gas to damage/slow nearby players. |
-| `enemy_hammer` | Heavy sledgehammer robot that sprints in and lands one big swing up close; damage stuns it. |
-| `enemy_knife` | Agile hovering knife robot that circles the player and performs high-speed dash attacks. |
-| `enemy_loot` | Drops items when defeated. |
-| `enemy_melee` | Close-range melee attacker. |
-| `enemy_mine_bot` | Mine bot enemy that wanders, drops landmines, and becomes a proximity bomb. |
-| `enemy_minigun` | Heavy robot with twin miniguns that sprays a continuous stream of bullets. |
-| `enemy_rocket_bot` | Treaded robot that kites the player (retreats when close, strafes at range) and fires tracking rockets from its right-arm launcher. |
-| `enemy_shield` | Has a shield reducing/blocking damage until disabled. |
-| `enemy_shooter` | Ranged enemy that aims and fires projectiles. |
-| `enemy_spider_mine` | Proximity mine, detonates near the player. |
-| `enemy_spinner` | Patrols, sprays 360° low bullets. |
-| `enemy_turret` | Stationary turret; `type` selects firing behavior (e.g. `MINIGUN`, `SHOTGUN`). |
-| `enemy_tutorial_dummy` | Target-practice dummy that reports weapon hit types. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `display_poster` | brush | CRT-styled digital poster display (`poster_dir`, `poster_index`, `deterministic`, `destroyable`, `flip_x`, `flip_y`, `glow_intensity`, `enable_light`). |
+| `display_screen` | brush | CRT-styled brush display (heading/subtext, font sizes, `destroyable`, `flip_text`). |
+| `display_screen_tips` | point | Display screen showing general tutorial tips. |
+| `display_sign` | point | Sign with custom `text`. |
 
-### point/info
+### effect
 
-| Classname | Purpose |
-|---|---|
-| `info_display_screen_tips` | Display screen showing general tutorial tips. |
-| `info_display_screen_tutorial` | Display screen showing the combat tutorial. |
-| `info_display_screen_tutorial_companion` | Display screen showing dynamic keybind instructions during the combat tutorial. |
-| `info_environment` | Sets environment/skybox/sun preset (`environment` index 1/5/6/7/8/9) plus sun color/direction/energy, with optional `random_earthquakes` toggle (20s–45s interval). |
-| `info_lounge_radio` | Destructible lounge radio that plays music. |
-| `info_lounge_terminal` | Interactable terminal for stats/email/progress. |
-| `info_map_data` | Per-level config: hub flag, disabled weapons, default flashlight, disabled music, kill depth, start VO. One per map. |
-| `info_marker_path` | Named ordered path point for moving platforms/entities. |
-| `info_marker_target` | Named reference marker (elevators, some triggers). |
-| `info_marker_teleport` | Named safe teleport destination (e.g. for water hazards). |
-| `info_particle_loop` | Continuously plays a particle effect/scene at its location (`path`). |
-| `info_path_simulator` | Debug helper that visually follows an `info_marker_path` sequence. |
-| `info_player_spawn` | Player spawn/respawn point. One (or more) required per map. |
-| `info_portal_full_scene` | Framed portal that loads another `.map` by name (`map_name`, `enable_fuses`, `use_round_complete_screen`). |
-| `info_portal_scene` | Unframed portal loading another `.map` by name; same properties as above. |
-| `info_screen_area_unlock` | Display screen showing area-unlock details (`area_name`). |
-| `info_screen_level_details` | Display screen showing level details (`level_name`). |
-| `info_sign` | Sign with custom `text`. |
-| `info_tutorial_marker` | Pulsing holographic floor ring highlighting tutorial areas. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `effect_explosion` | point | Spawns one or more explosions at this point (`explosion_type`, `count`, `ms_delay`). |
+| `effect_no_rain` | brush | Suppresses the rain particle effect inside (sheltered zones). |
+| `effect_particle_collision` | brush | Volume that handles particle-system collision interactions. |
+| `effect_particle_loop` | point | Continuously plays a particle effect/scene at its location (`path`). |
 
-### point/lights
+### enemy
 
-| Classname | Purpose |
-|---|---|
-| `light_tiny` / `light_small` / `light_medium` / `light_large` / `light_xlarge` | Adjustable point light (`color`, `energy`, `attenuation`, `fade_begin`, `flicker`, `shadows`); size picks default scale. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `enemy_arena_spawner` | point | Wave-based arena spawner (`rng_*` or `static_spawn` waves); fires `uid_to_invoke` when cleared. |
+| `enemy_spawn` | point | Spawns a named `enemy_type` when triggered. |
+| `enemy_spawner` | point | Periodically spawns one `enemy_type` up to a concurrent/lifetime cap. |
 
-### point/panels
+### info
 
-| Classname | Purpose |
-|---|---|
-| `panel_destructive` | Destroy this panel to fire `uid_to_invoke`. |
-| `panel_electrical` | Must be shot with the revolver's electric special-fire to fire `uid_to_invoke`. |
-| `panel_fuse` | Fuse-collectible panel that activates portals; give it a `uid_to_invoke`. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `info_cinecam` | point | Cinematic camera viewpoint used during round complete when End Map Replay is disabled. Cycles through placed cinecams to showcase scenic areas of the map. |
+| `info_environment` | point | Sets environment/skybox/sun preset (`environment` index 1/5/6/7/8/9) plus sun color/direction/energy, with optional `random_earthquakes` toggle (20s–45s interval). |
+| `info_map_data` | point | Per-level config: hub flag, disabled weapons, default flashlight, disabled music, kill depth, start VO. One per map. |
+| `info_player_spawn` | point | Player spawn/respawn point. One (or more) required per map. |
 
-### point/pickup
+### interact
 
-| Classname | Purpose |
-|---|---|
-| `pickup_ammo_permanent_revolver` / `pickup_ammo_permanent_shotgun` | Persistent ammo pickups. |
-| `pickup_ammo_revolver` / `pickup_ammo_shotgun` | Standard ammo refill pickups (shotgun variant supports `quad`). |
-| `pickup_computer_chip` | Collectible for puzzles/objectives. |
-| `pickup_fuse` | Fuse collectible for portal activation. |
-| `pickup_keycard` | Keycard collectible; set `type` (`RED`/`BLUE`) to match gated doors/switches. |
-| `pickup_medkit` / `pickup_medkit_permanent` | Health pickups (standard / persistent). |
-| `pickup_revolver` / `pickup_shotgun` | Weapon pickups granting the gun + starting ammo. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `interact_floor_switch` | point | Floor-plate variant of the above. |
+| `interact_keycard_switch` | point | Requires matching `keycard` type to fire `uid_to_invoke`. |
+| `interact_panel_destructive` | point | Destroy this panel to fire `uid_to_invoke`. |
+| `interact_panel_electrical` | point | Must be shot with the revolver's electric special-fire to fire `uid_to_invoke`. |
+| `interact_panel_fuse` | point | Fuse-collectible panel that activates portals; give it a `uid_to_invoke`. |
+| `interact_switch` | point | Wall switch; fires `uid_to_invoke` (optional `oneshot`). |
+| `interact_trigger` | point | generic press-E interactable with no model or state of its own; fires target(s) by name |
 
-### point/powerup
+### light
 
-| Classname | Purpose |
-|---|---|
-| `powerup_adrenaline` | Temporary speed + fire-rate boost. |
-| `powerup_arcane_chainsaw` | Temporary melee weapon/enhanced melee damage. |
-| `powerup_armor` | Temporary damage reduction/armor points. |
-| `powerup_bullet_bounce` | Temporary projectile ricochet (`quad` variant available). |
-| `powerup_bullet_choke` | Temporary spread/damage modifier (`quad` variant available). |
-| `powerup_revolver_head_burster` | Revolver Head Burster mod. |
-| `powerup_revolver_storm` | Temporary rapid/multi-shot revolver fire. |
-| `powerup_revolver_vampire` | Revolver Vampire Shots mod. |
-| `powerup_shotgun_dragonfire` | Shotgun shells that ignite enemies on hit. |
-| `powerup_shotgun_kinetic_battery` | Next ground slam: 10x damage, 2x AoE. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `light_alarm` | point | Rotating industrial sweep alarm beacon, toggleable. |
+| `light_blinking` | brush | Blinking computer / indicator light brush with zero-emission unshaded texture. Overlays a white texture, recolors to specified color with 2x HDR overclock when lit, and goes black when off. |
+| `light_group_switch` | point | Switches every light (light_tiny ... light_xlarge) whose light_group matches. |
+| `light_large` | point | Adjustable light. Takes `color`, `energy`, `flicker`, `shadows`, `light_group`, `start_off`. |
+| `light_medium` | point | Adjustable light. Takes `color`, `energy`, `flicker`, `shadows`, `light_group`, `start_off`. |
+| `light_small` | point | Adjustable light. Takes `color`, `energy`, `flicker`, `shadows`, `light_group`, `start_off`. |
+| `light_tiny` | point | Adjustable light. Takes `color`, `energy`, `flicker`, `shadows`, `light_group`, `start_off`. |
+| `light_xlarge` | point | Adjustable light. Takes `color`, `energy`, `flicker`, `shadows`, `light_group`, `start_off`. |
 
-### point/switches
+### logic
 
-| Classname | Purpose |
-|---|---|
-| `door_switch` | Wall switch; fires `uid_to_invoke` (optional `oneshot`). |
-| `door_switch_floor` | Floor-plate variant of the above. |
-| `keycard_switch` | Requires matching `keycard` type to fire `uid_to_invoke`. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `logic_achievement_unlock` | point | Unlocks an achievement when invoked by another trigger or destructible. |
+| `logic_bool_relay` | point | Reads a save-state boolean; if true, immediately fires the named trigger on ready. |
+| `logic_counter` | point | Counts incoming invoke() calls and invokes uid_to_invoke once required_count is reached. |
+| `logic_delay` | point | Invokes uid_to_invoke a set number of seconds after being invoked. Pauses with the game. |
+| `logic_gate` | point | Passes invokes through to uid_to_invoke only while open. Other entities open/close it through its control uids. Combine with logic_counter for AND/OR logic. |
+| `logic_load_scene` | point | Transitions to a new scene when triggered by an adjacent area. |
+| `logic_menu` | point | Opens a specific menu screen by `menu_type` index (see `.tres` for the full enum). |
+| `logic_new_scene` | point | Instantiates a scene at `scene_path` when triggered. |
+| `logic_random` | point | Each invoke fires one uid picked at random from a comma-separated list. |
+| `logic_remove_ammo` | point | Strips revolver/shotgun ammo when triggered. |
+| `logic_remove_guns` | point | Strips revolver/shotgun weapons when triggered. |
+| `logic_repeater` | point | Invokes uid_to_invoke on a fixed interval while enabled. Invoking the repeater toggles it on/off. Pauses with the game. |
+| `logic_sequence` | point | Each invoke fires the next uid in a comma-separated list, in order. |
+| `logic_terminal_email` | point | Adds a persisted email to the lounge terminal inbox; usually fired via an `area_trigger`'s `uid_to_invoke`. |
+| `logic_toggle_bool` | point | Sets a named save-state boolean to true when invoked (auto-saves). |
 
-### point/traps
+### lounge
 
-| Classname | Purpose |
-|---|---|
-| `trap_bullet` | Fires bullets on a loop, or on-demand if given a `uid`. |
-| `trap_landmine` | Explodes when the player steps on it. |
-| `trap_laser` | Continuous damaging laser. |
-| `trap_rocket` | Fires rockets (homing disabled) on a loop, or on-demand if given a `uid`. |
-| `trap_steam` | Steam hazard. |
-| `trap_steam_valve` | Destructible valve that spawns a `trap_steam`. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `lounge_area_unlock_screen` | point | Display screen showing area-unlock details (`area_name`). |
+| `lounge_cpu_cluster` | point | Press-[E] trigger for the CPU Cluster Screen. Prompts 'Verify CPU Cluster' to launch the scrolling per-level CPU verification display, and prompts 'Open Door' to invoke uid_to_invoke once all 15 alpha-charlie CPUs are verified. |
+| `lounge_cpu_cluster_screen` | point | Interactive display screen that tracks all 15 alpha-charlie sector CPUs, plays a scrolling per-level verification visualization when pressing [E] ('Verify CPU Cluster'), and triggers 'Open Door' when all 15 alpha-charlie CPUs are collected. |
+| `lounge_level_details_screen` | point | Display screen showing level details (`level_name`). |
+| `lounge_radio` | point | Destructible lounge radio that plays music. |
+| `lounge_sector_terminal` | point | Interactive sector terminal that displays level details and cycles through a sector's maps to tune a linked interactive portal. |
+| `lounge_starfield` | brush | Solid brush entity that renders an opaque cosmic starfield shader with infinite parallax depth on its surfaces. |
+| `lounge_terminal` | point | Interactable terminal for stats/email/progress. |
 
-### point/triggers
+### marker
 
-| Classname | Purpose |
-|---|---|
-| `trigger_bool_relay` | Reads a save-state boolean; if true, immediately fires the named trigger on ready. |
-| `trigger_enemy_arena_spawner` | Wave-based arena spawner (`rng_*` or `static_spawn` waves); fires `uid_to_invoke` when cleared. |
-| `trigger_enemy_spawner` | Periodically spawns one `enemy_type` up to a concurrent/lifetime cap. |
-| `trigger_explosion` | Spawns one or more explosions at this point (`explosion_type`, `count`, `ms_delay`). |
-| `trigger_load_scene` | Transitions to a new scene when triggered by an adjacent area. |
-| `trigger_menu` | Opens a specific menu screen by `menu_type` index (see `.tres` for the full enum). |
-| `trigger_new_enemy` | Spawns a named `enemy_type` when triggered. |
-| `trigger_new_scene` | Instantiates a scene at `scene_path` when triggered. |
-| `trigger_remove_ammo` | Strips revolver/shotgun ammo when triggered. |
-| `trigger_remove_guns` | Strips revolver/shotgun weapons when triggered. |
-| `trigger_sound` | Plays `audio_path` (2D or 3D) when its `uid` is fired; supports `ms_delay`. |
-| `trigger_terminal_email` | Adds a persisted email to the lounge terminal inbox; usually fired via a `trigger_area`'s `uid_to_invoke`. |
-| `trigger_toggle_bool` | Sets a named save-state boolean to true when invoked (auto-saves). |
+| Classname | Type | Purpose |
+|---|---|---|
+| `marker_path` | point | Named ordered path point for moving platforms/entities. |
+| `marker_path_simulator` | point | Debug helper that visually follows a `marker_path` sequence. |
+| `marker_target` | point | Named reference marker (elevators, some triggers). |
+| `marker_teleport` | point | Named safe teleport destination (e.g. for water hazards). |
 
-### solid (no subfolder)
+### mover
 
-| Classname | Purpose |
-|---|---|
-| `func_crystal` | Glowing crystal structure brush. Quake-style procedural crystal shader at 32 texels/m (pixel-snapped base-to-tip gradient over the group height, no dither, per-face shade, brush texture screen-blended at 0.9, subtle animated rising light band + facet glint on top). Semi-translucent, no light (`color` default cyan, `glow`, `opacity` default 0.85). |
-| `func_destructable_barrel` | Explosive/breakable barrel (`godmode` makes it indestructible but still explodes when hit). |
-| `func_destructable_control_panel` | Destructible control panel; fires `uid_to_invoke` when broken. |
-| `func_display_screen` | CRT-styled brush display (heading/subtext, font sizes, `destroyable`, `flip_text`). |
-| `func_display_poster` | CRT-styled digital poster display (`poster_dir`, `poster_index`, `deterministic`, `destroyable`, `flip_x`, `flip_y`, `glow_intensity`, `enable_light`). |
-| `func_graffiti` | Wall graffiti projection brush (`flip_x`). Automatically selects graffiti texture (0-17) based on brush world position; non-destructible; avoids decal limits (32 max). |
-| `func_group` | Groups brush entities for later toggling; give it a `uid`. |
-| `func_ice` | Static solid that reduces player traction (slippery). |
+| Classname | Type | Purpose |
+|---|---|---|
+| `mover_brush` | brush | Moves a brush `move_distance` along `direction` at `move_speed` when triggered; `toggleable` for back-and-forth. |
+| `mover_crusher` | brush | Configurable crushing block: extends to a `uid_to_move_to` marker, becomes lethal at max extension, retracts back to start, repeats; supports `fake_crush_count` fake-out jabs plus delay/pause tuning. No trigger required. |
+| `mover_elevator` | brush | Rides the player to a `marker_target` and back; see 2.5. |
+| `mover_explosion_force` | brush | Frozen brush that gets a physics impulse (`direction`, `direction_spread`, `force`, `force_variation`, `torque_scale`) when triggered. |
+| `mover_loop` | brush | Loops back to start instantly on reaching `move_distance`. |
+| `mover_loop_smooth` | brush | Same, but loops back smoothly rather than teleporting. |
+| `mover_rotate_x` | brush | Continuously rotates the brush group on the X axis (`speed`, `direction`), no trigger required. |
+| `mover_rotate_y` | brush | Continuously rotates the brush group on the Y axis (`speed`, `direction`), no trigger required. |
+| `mover_rotate_z` | brush | Continuously rotates the brush group on the Z axis (`speed`, `direction`), no trigger required. |
 
-### solid/audio
+### pickup
 
-| Classname | Purpose |
-|---|---|
-| `audio_ambient_area` | Plays one of a comma-separated `ambient_names` list to anything inside the brush volume. |
-| `audio_room_tone` | Fades in looping ambient audio (`audio_name`) on the ambience bus when the player enters the brush volume, and fades out on exit (`fade_time`, `volume_db`, `pitch_scale`). |
+| Classname | Type | Purpose |
+|---|---|---|
+| `pickup_ammo_permanent_revolver` | point | Persistent ammo pickup for revolver |
+| `pickup_ammo_permanent_shotgun` | point | Persistent ammo pickup for shotgun. |
+| `pickup_ammo_revolver` | point | Revolver ammo pickup that replenishes the player's revolver ammunition by a configured amount. |
+| `pickup_ammo_shotgun` | point | Shotgun ammo pickup that replenishes shotgun shells for the player. |
+| `pickup_computer_chip` | point | Collectible for puzzles/objectives. |
+| `pickup_fuse` | point | Fuse collectible for portal activation. |
+| `pickup_keycard` | point | Keycard collectible; set `type` (`RED`/`BLUE`) to match gated doors/switches. |
+| `pickup_medkit` | point | Standard medkit pickup that restores player health when collected. |
+| `pickup_medkit_permanent` | point | Persistent medkit that heals the player. |
+| `pickup_revolver` | point | Revolver weapon pickup that grants the player the revolver and its starting ammunition when collected. |
+| `pickup_scrap` | point | Scrap collectible picked up by the player. |
+| `pickup_shotgun` | point | Shotgun weapon pickup that gives the player a shotgun and initial shells upon collection. |
 
-### solid/destructable
+### portal
 
-| Classname | Purpose |
-|---|---|
-| `destructable_dynamic` | Generic destructible; `destruction_mode` = 0 default / 1 charged-melee-only / 2 ground-slam-only / 3 destroy-on-bump. Pieces/audio follow the texture prefix — glass windows are `destructable_dynamic` with a `G*` texture (glass impact FX + shatter overlay) and `freeze 1`. |
-| `destructable_light` | Breakable light fixture. |
-| `destructable_vending_machine` | Destructible vending machine that spits out health/armor pickups. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `portal_full_scene` | point | Framed portal that loads another `.map` by name (`map_name`, `enable_fuses`, `use_round_complete_screen`). |
+| `portal_interactive` | point | Interactive sector portal that can be tuned remotely by a terminal, turning off and re-igniting with SFX and particles when its destination changes. |
+| `portal_scene` | point | Unframed portal loading another `.map` by name; same properties as above. |
 
-### solid/info
+### powerup
 
-| Classname | Purpose |
-|---|---|
-| `info_area_achievement_unlock` | Unlocks a Steam/in-game achievement (`achievement_name`) on entry. |
-| `info_area_remove_ammo` | Strips ammo on entry (pairs with `trigger_remove_ammo` logic). |
-| `info_area_secret_unlock` | Unlocks a secret by `secret_int` id on entry. |
-| `info_area_toggle_boolean` | Sets a named save-state boolean to true on entry (auto-saves). |
-| `info_control_prompt` | Shows an on-screen control prompt while the player is inside (`action_display`, `action_name`, `context`). |
-| `info_dangerous_fluid` | Acid/lava/arctic hazard (`fluid_type` 0=acid/1=lava/2=arctic); `instant_kill` toggle, `enable_sound` toggle, optional `teleport_name` respawn. |
-| `info_fog_volume` | Local fog volume (`color`, `density`). |
-| `info_footstep_surface` | Marks a surface as queryable for footstep sound selection. |
-| `info_hurtbox` | Generic damage/effect volume for hazards and traps. |
-| `info_particle_collision` | Volume that handles particle-system collision interactions. |
-| `info_particle_no_rain` | Suppresses the rain particle effect inside (sheltered zones). |
-| `info_water_flowing` | Moving water hazard (`direction`, `fog_color`, `instant_kill`, `teleport_name`). |
-| `info_water_transparent` | Standard water hazard (`color`, `subdivisions`, `instant_kill`, `teleport_name`). |
-| `info_window` | Marks a brush as an indestructible window. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `powerup_adrenaline` | point | Temporary speed + fire-rate boost. |
+| `powerup_arcane_chainsaw` | point | Temporary melee weapon/enhanced melee damage. |
+| `powerup_armor` | point | Temporary damage reduction/armor points. |
+| `powerup_bullet_bounce` | point | Temporary projectile ricochet (`quad` variant available). |
+| `powerup_bullet_choke` | point | Temporary spread/damage modifier (`quad` variant available). |
+| `powerup_revolver_head_burster` | point | Revolver Head Burster mod. |
+| `powerup_revolver_storm` | point | Temporary rapid/multi-shot revolver fire. |
+| `powerup_revolver_vampire` | point | Revolver Vampire Shots mod. |
+| `powerup_shotgun_dragonfire` | point | Shotgun shells that ignite enemies on hit. |
+| `powerup_shotgun_kinetic_battery` | point | Next ground slam: 10x damage, 2x AoE. |
 
-### solid/platforms
+### trap
 
-| Classname | Purpose |
-|---|---|
-| `platform_rotate_x` | Continuously rotates the brush group on the X axis (`speed`, `direction`), no trigger required. |
-| `platform_rotate_y` | Continuously rotates the brush group on the Y axis (`speed`, `direction`), no trigger required. |
-| `platform_rotate_z` | Same, on the Z axis. |
-| `platform_crusher` | Configurable crushing block: extends to a `uid_to_move_to` marker, becomes lethal at max extension, retracts back to start, repeats; supports `fake_crush_count` fake-out jabs plus delay/pause tuning. No trigger required. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `trap_bullet` | point | Fires bullets on a loop, or on-demand if given a `uid`. |
+| `trap_landmine` | point | Explodes when the player steps on it. |
+| `trap_laser` | point | Continuous damaging laser. |
+| `trap_rocket` | point | Fires rockets (homing disabled) on a loop, or on-demand if given a `uid`. |
+| `trap_steam` | point | Steam hazard. |
+| `trap_steam_valve` | point | Destructible valve that spawns a `trap_steam`. |
+| `trap_train` | model | Moving train hazard that follows a target path or marker. |
+| `trap_turret` | point | Fixed turret hazard (`type`, e.g. `MINIGUN`). Placed directly like other traps. |
 
-### solid/triggers
+### tutorial
 
-| Classname | Purpose |
-|---|---|
-| `trigger_area` | General-purpose trigger volume; `is_button`/`is_player_only`/`keycard`/`ms_timeout`/`trigger_once`/`uid_to_invoke`/`emit_bus`. See 2.3–2.4. |
-| `trigger_area_arena` | Requires all enemies inside to die before firing its `uid_to_invoke` on exit. |
-| `trigger_area_weather` | Sets local weather (`weather_type`: 0 none / 1 rain / 2 snow / 3 ash / 4 sandstorm). |
-| `trigger_electric_panel` | Like `trigger_area`, but only activates on the revolver's electric special-fire. |
-| `trigger_elevator` | Rides the player to an `info_marker_target` and back; see 2.5. |
-| `trigger_explosion_force` | Frozen brush that gets a physics impulse (`direction`, `direction_spread`, `force`, `force_variation`, `torque_scale`) when triggered. |
-| `trigger_jump_pad` | Launches entities that touch it (`jump_force`). |
-| `trigger_looping_moveable_brush` | Loops back to start instantly on reaching `move_distance`. |
-| `trigger_looping_moveable_smooth_brush` | Same, but loops back smoothly rather than teleporting. |
-| `trigger_move_brush` | Moves a brush `move_distance` along `direction` at `move_speed` when triggered; `toggleable` for back-and-forth. |
-| `trigger_remove_weapons` | Strips weapons on entry; `restore_on_leave` to give them back on exit. |
+| Classname | Type | Purpose |
+|---|---|---|
+| `tutorial_control_prompt` | brush | Shows an on-screen control prompt while the player is inside (`action_display`, `action_name`, `context`). |
+| `tutorial_dummy` | point | Training target dummy for tutorial and hub areas. |
+| `tutorial_marker` | point | Pulsing holographic floor ring highlighting tutorial areas. |
+| `tutorial_screen` | point | Display screen showing the combat tutorial. |
+| `tutorial_screen_companion` | point | Display screen showing dynamic keybind instructions during the combat tutorial. |
+
+### water
+
+| Classname | Type | Purpose |
+|---|---|---|
+| `water_endless` | point | Point-placed water. The point's position is exactly where the water surface sits — the water spawns as one giant plane centered on that point and fades into the distance with a fake horizon curvature, giving the feeling of an endless body of water. Uses the same enter/exit submersion behavior (screen tint, splash sound, is-in-water state) as regular water. |
+| `water_flowing` | brush | Moving water hazard (`direction`, `fog_color`, `instant_kill`, `teleport_name`). |
+| `water_transparent` | brush | Standard water hazard (`color`, `subdivisions`, `instant_kill`, `teleport_name`). |
+
+### world
+
+| Classname | Type | Purpose |
+|---|---|---|
+| `world_crystal` | brush | Glowing crystal structure brush. Quake-style procedural crystal shader at 32 texels/m (pixel-snapped base-to-tip gradient over the group height, no dither, per-face shade, brush texture screen-blended at 0.9, subtle animated rising light band + facet glint on top). Semi-translucent, no light (`color` default cyan, `glow`, `opacity` default 0.85). |
+| `world_footstep_surface` | brush | Marks a surface as queryable for footstep sound selection. |
+| `world_ice` | brush | Static solid that reduces player traction (slippery). |
+| `world_player_clip` | brush | Invisible barrier that blocks the player from entering an area, but allows projectiles and enemies to pass through. |
+| `world_refraction_glass` | brush | Standard refraction glass brush. Frosted, ribbed glass that blurs what is behind it. The look is fixed so all glass in the game matches. |
+| `world_window` | brush | Marks a brush as an indestructible window. |
 
 ## 5. Troubleshooting
 
@@ -496,7 +612,7 @@ list and defaults (also visible live in TrenchBroom's Entity Inspector).
 - **Entity class exists in the `.tres` folder but you can't find it in TrenchBroom at all.** Check
   it's actually listed in `entity_definitions` inside `trenchbroom/fpsdevkit_fgd.tres` — a `.tres` file
   sitting in `trenchbroom/fgd/` is not automatically included; it has to be added as an `ext_resource`
-  and appended to that array. (`info_teleport_portal` and `pickup_arc` are examples of `.tres` files
+  and appended to that array. (`portal_teleport` and `pickup_arc` are examples of `.tres` files
   that currently exist but are *not* wired into the shipped FGD — they won't appear in TrenchBroom
   until someone adds them to the array.)
 - **Trigger/switch does nothing in-game.** Double-check the `uid` on the receiving entity exactly

@@ -77,7 +77,7 @@
 }
 // entity 4
 {
-"classname" "trigger_area"
+"classname" "area_trigger"
 "uid_to_invoke" "arena_wave"
 "is_player_only" "1"
 "trigger_once" "1"
@@ -93,7 +93,7 @@
 }
 // entity 5
 {
-"classname" "trigger_enemy_spawner"
+"classname" "enemy_spawner"
 "origin" "256 -256 24"
 "angle" "180"
 "uid" "arena_wave"
@@ -105,7 +105,7 @@
 }
 // entity 6
 {
-"classname" "trigger_enemy_spawner"
+"classname" "enemy_spawner"
 "origin" "256 256 24"
 "angle" "180"
 "uid" "arena_wave"
@@ -117,7 +117,7 @@
 }
 // entity 7
 {
-"classname" "trigger_enemy_spawner"
+"classname" "enemy_spawner"
 "origin" "512 0 24"
 "angle" "180"
 "uid" "arena_wave"
@@ -139,7 +139,7 @@
 }
 // entity 10
 {
-"classname" "info_portal_scene"
+"classname" "portal_scene"
 "origin" "704 0 64"
 "angle" "180"
 "map_name" "example_single_map"

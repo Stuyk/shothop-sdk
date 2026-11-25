@@ -30,7 +30,7 @@ Every entity and what it does is in the [Entity reference](fgd_guide.md).
 
 **Keep one `info_player_spawn` in every map.** No spawn, no player.
 
-**Spawn enemies with a trigger, not by placing them.** A `trigger_area` wakes `trigger_enemy_spawner`s when you walk in. [How](maps.md#enemies-use-triggers), and every example in [`examples/`](../examples) does it.
+**Spawn enemies with a trigger, not by placing them.** An `area_trigger` wakes `enemy_spawner`s when you walk in. [How](maps.md#enemies-use-triggers), and every example in [`examples/`](../examples) does it.
 
 ## 4. Check it
 

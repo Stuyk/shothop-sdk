@@ -19,7 +19,7 @@ Subfolders are fine. `maps/arena/arena.map` works the same as `maps/arena.map`.
 2. **One `info_environment` right next to the spawn.** Sky, fog and the sun. Skip it and your level has no proper sky or sunlight.
 3. **One `info_map_data` next to it too.** Level settings and trophy times.
 4. **Lights.** `light_small` through `light_xlarge` for anything the sun doesn't reach.
-5. **A way to finish.** An `info_portal_scene` with `map_name` set to the next level and `use_round_complete_screen` set to `1`.
+5. **A way to finish.** A `portal_scene` with `map_name` set to the next level and `use_round_complete_screen` set to `1`.
 6. **Valve 220 format.** TrenchBroom does this for you when you pick the Shothop game.
 
 Every campaign level keeps the spawn, `info_environment` and `info_map_data` in one little cluster. Do the same and you always know where to find them.
@@ -87,11 +87,11 @@ Map in its own subfolder? You can name the JSON `map.json` instead of `<map>.jso
 
 **Don't place enemies straight into the map.** Put down spawners and wake them with a trigger when the player walks in. That's how every campaign level does it: fights start when the player gets there, not the second the map loads.
 
-1. Draw a brush where the fight should start, textured `skip` (invisible). Turn it into a `trigger_area`:
+1. Draw a brush where the fight should start, textured `skip` (invisible). Turn it into an `area_trigger`:
    - `uid_to_invoke`: a name for this fight, like `room1_wave`
    - `is_player_only`: `1`
    - `trigger_once`: `1`
-2. Place a `trigger_enemy_spawner` where each enemy should appear:
+2. Place an `enemy_spawner` where each enemy should appear:
    - `uid`: the same name, `room1_wave`
    - `enabled`: `0` (the trigger turns it on)
    - `enemy_type`: which enemy, from the table below
@@ -132,9 +132,9 @@ Portals load the next map by its file name without `.map`:
 
 | Entity | What it does |
 |---|---|
-| `info_portal_scene` | A portal you walk into |
-| `info_portal_full_scene` | Same, with a visible frame around it |
-| `info_portal_interactive` | A portal a terminal can retune (see below) |
+| `portal_scene` | A portal you walk into |
+| `portal_full_scene` | Same, with a visible frame around it |
+| `portal_interactive` | A portal a terminal can retune (see below) |
 
 Set `map_name` to the target, like `neon_02`. Run `mod check` and it warns you if a portal points at a map that isn't installed.
 
@@ -142,8 +142,8 @@ Set `map_name` to the target, like `neon_02`. Run `mod check` and it warns you i
 
 Put your levels in a sector in `mod.json` ([how](mods.md#sectors)), then drop these two in a hub map:
 
-1. An `info_portal_interactive` with `uid` set to something like `portal_neon`.
-2. An `info_terminal_sector` with `sector` set to your sector id and `uid_to_invoke` set to `portal_neon`.
+1. A `portal_interactive` with `uid` set to something like `portal_neon`.
+2. A `lounge_sector_terminal` with `sector` set to your sector id and `uid_to_invoke` set to `portal_neon`.
 
 Players use the terminal to cycle through the sector's levels, and the portal follows. The first level is always open. The rest open once a player has visited them.
 

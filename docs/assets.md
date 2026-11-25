@@ -10,7 +10,7 @@ Then use the **file name** in the entity, with or without the extension:
 
 | Entity | Property | Example |
 |---|---|---|
-| `trigger_sound` | `audio_path` | `neon_alarm` |
+| `audio_sound` | `audio_path` | `neon_alarm` |
 | `audio_room_tone` | `audio_name` | `neon_room_hum` |
 | `audio_ambient_sound` | `audio_name` or `sound_name` | `neon_rain` |
 | `audio_attached` | `audio_path` or `file_path` | `neon_engine` |
@@ -113,15 +113,14 @@ Put `.png` (or `.jpg`, `.webp`) files in your mod's `textures/` folder. A brush 
 
 **Copy the same files into the SDK's `textures/` folder too.** That's where TrenchBroom looks, so that's how they show up in the texture browser.
 
-The game checks these places, in order, for each texture in your map:
+**`textures/` is for new textures.** Use names the game doesn't already have, like `NEON_WALL`. A built-in name always shows the built-in texture. To change one of those, put your file in `replace/` instead ([how](#replace-built-in-sounds-and-textures)).
+
+For a texture that isn't built in, the game checks these places, in order:
 
 1. The folder the map is in.
 2. A `textures/` folder next to the map.
 3. Your mod's `textures/`.
 4. Every other mod's `textures/`.
-5. The built-in textures.
-
-A texture with the same name as a built-in one replaces it, but **only in your maps**. The campaign never changes.
 
 ### Name prefixes set the surface
 

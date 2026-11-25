@@ -31,12 +31,12 @@
 @SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_detail_illusionary : "Static geometry with no collision. Builds a Node3D with a MeshInstance3D. Does not occlude other VisualInstance3D nodes." []
 
 @SolidClass color(204 204 204) base(Phong, VertexMergeDistance, CullInteriorFaces) = func_illusionary : "Static geometry with no collision. Builds a Node3D with a MeshInstance3D and an Occluder3D to aid in render culling of other VisualInstance3D nodes." []
-@SolidClass color(204 204 204) = info_hurtbox : "Hurtbox area that applies damage to the player upon entering; attach to hazards or traps." 
+@SolidClass color(204 204 204) = area_hurtbox : "Hurtbox area that applies damage to the player upon entering; attach to hazards or traps." 
 [
 	damage(float) : "Amount of damage dealt to the player when entering this hurtbox (default 10.0)." : "10.0"
 ]
 
-@SolidClass color(204 204 204) = func_destructable_barrel : "Explosive or breakable barrel that reacts to damage; `godmode` prevents destruction when true.
+@SolidClass color(204 204 204) = destructable_barrel : "Explosive or breakable barrel that reacts to damage; `godmode` prevents destruction when true.
 
 Properties:
 - godmode: If true, the barrel is immune to destruction and will explode every time it is damaged" 
@@ -48,7 +48,7 @@ Properties:
 	]
 ]
 
-@SolidClass color(204 204 204) = trigger_jump_pad : "a jump pad brush
+@SolidClass color(204 204 204) = area_jump_pad : "a jump pad brush
 
 Properties:
 - jump_force: Force applied to entities that contact the pad; higher values launch farther." 
@@ -56,7 +56,7 @@ Properties:
 	jump_force(float) : "Force applied to entities that contact the pad; higher values launch farther." : "50.0"
 ]
 
-@SolidClass color(204 204 204) = trigger_elevator : "Creates an elevator. The end point must be a info_market_target, and will automatically move to the market target if the player is on the platform. Additionally, moves back after the player leaves the platform.
+@SolidClass color(204 204 204) = mover_elevator : "Creates an elevator. The end point must be a info_market_target, and will automatically move to the market target if the player is on the platform. Additionally, moves back after the player leaves the platform.
 
 Properties:
 - is_hub_elevator: If true, elevator behaves as a hub transport between multiple markers.
@@ -77,7 +77,7 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	pause_at_top(integer) : "Time in milliseconds to pause at the top/stop destination before returning down." : 3000
 	speed(float) : "Movement speed of the elevator platform." : "10.0"
 	stop_at_end(choices) : "If true, elevator disables itself permanently once it reaches its stop destination (no return trip, no further use)." : 0 = 
@@ -85,10 +85,10 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : "The uid of the marker/waypoint to move to."
+	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : ""
 ]
 
-@SolidClass color(204 204 204) = info_water_transparent : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it.
+@SolidClass color(204 204 204) = water_transparent : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it.
 
 Properties:
 - color: Water color used for rendering and visual tinting.
@@ -106,31 +106,31 @@ Properties:
 	teleport_name(string) : "Optional marker name to teleport the player to on death or hazard exit." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_teleport : "Teleport marker used as a safe teleport destination (e.g., for water hazards); set `name` to reference it.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = marker_teleport : "Teleport marker used as a safe teleport destination (e.g., for water hazards); set `name` to reference it.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_target : "Adds a marker to reference for various functionality such as elevators, and sometimes triggers.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = marker_target : "Adds a marker to reference for various functionality such as elevators, and sometimes triggers.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = func_destructable_control_panel : "Destructible control panel that triggers a named target when broken.
+@SolidClass color(204 204 204) = destructable_control_panel : "Destructible control panel that triggers a named target when broken.
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@SolidClass color(204 204 204) = info_area_toggle_boolean : "Allows you to toggle a specific save state boolean to true when the area is entered. Automatically saves.
+@SolidClass color(204 204 204) = area_toggle_bool : "Allows you to toggle a specific save state boolean to true when the area is entered. Automatically saves.
 
 Properties:
 - name: Save-state boolean name which will be set to true when the player enters this area." 
@@ -138,7 +138,7 @@ Properties:
 	name(string) : "Save-state boolean name which will be set to true when the player enters this area." : ""
 ]
 
-@SolidClass color(204 204 204) = info_particle_no_rain : "Removes the rain particle effect on entities inside the area (used for sheltered zones)." []
+@SolidClass color(204 204 204) = effect_no_rain : "Removes the rain particle effect on entities inside the area (used for sheltered zones)." []
 
 @SolidClass color(204 204 204) = audio_ambient_area : "When you specify a name the names for each ambient file can be comma delimited. Meaning: ambient_drone,whatever,xyz
 
@@ -148,9 +148,9 @@ Properties:
 	ambient_names(string) : "Comma-separated list of ambient sound identifiers to play within this area." : "ambient_drone"
 ]
 
-@SolidClass color(204 204 204) = info_area_remove_ammo : "Area that removes player ammo when entered; configure using the matched `trigger_remove_ammo` if needed." []
+@SolidClass color(204 204 204) = area_remove_ammo : "Area that removes player ammo when entered; configure using the matched `logic_remove_ammo` if needed." []
 
-@SolidClass color(204 204 204) = trigger_area : "Invokes triggers with different behavior.
+@SolidClass color(204 204 204) = area_trigger : "Invokes triggers with different behavior.
 
 Properties:
 - emit_bus: Target event bus channel name to notify when this area is triggered.
@@ -179,10 +179,10 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_sound : "Adds a triggerable sound. Make sure to add a name to the trigger_name property. It needs a corresponding trigger to invoke it.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = audio_sound : "Adds a triggerable sound. Make sure to add a name to the trigger_name property. It needs a corresponding trigger to invoke it.
 
 Properties:
 - audio_path: Filename (no extension needed) of the .ogg to play when triggered. Searched in bundled game audio (res://assets/audio/sfx/) first, then user://maps, then finally tried as a literal path. If none match, plays nothing.
@@ -193,20 +193,20 @@ Properties:
 	audio_path(string) : "Filename (no extension needed) of the .ogg to play when triggered. Searched in bundled game audio (res://assets/audio/sfx/) first, then user://maps, then finally tried as a literal path. If none match, plays nothing." : ""
 	audio_type(integer) : "0 - 3D, 1 - 2D" : 0
 	ms_delay(float) : "Delay in milliseconds before the sound plays after trigger activation." : "0.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_new_scene : "Adds a triggerable scene, meaning it can spawn a new instance of something if the full scene path is set.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_new_scene : "Adds a triggerable scene, meaning it can spawn a new instance of something if the full scene path is set.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
 - scene_path: Filesystem path to the scene resource to instantiate when triggered." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	scene_path(string) : "Filesystem path to the scene resource to instantiate when triggered." : ""
 ]
 
-@SolidClass color(204 204 204) = trigger_move_brush : "Creates a moveable piece of geometry that can be moved by a trigger area.
+@SolidClass color(204 204 204) = mover_brush : "Creates a moveable piece of geometry that can be moved by a trigger area.
 
 Properties:
 - direction: The Vector3 direction which the brush moves.
@@ -237,7 +237,7 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_player_spawn : "Player spawn point used to place the player at map start or respawn locations." []
@@ -248,20 +248,24 @@ Properties:
 - attenuation: Light attenuation factor that controls falloff.
 - color: Light color.
 - energy: Brightness multiplier for the light.
-- fade_begin: Distance where the light starts to fade.
 - flicker: Enable random flicker effect when true.
 - shadows: Whether the light casts shadows." 
 [
 	attenuation(float) : "Light attenuation factor that controls falloff." : "0.3"
 	color(color255) : "Light color." : "214 178 133"
 	energy(float) : "Brightness multiplier for the light." : "2.0"
-	fade_begin(float) : "Distance where the light starts to fade." : "40.0"
 	flicker(choices) : "Enable random flicker effect when true." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
 	]
 	shadows(choices) : "Whether the light casts shadows." : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	light_group(string) : "Optional. Name shared by lights that light_group_switch switches together." : ""
+	start_off(choices) : "If true, the light starts switched off (turn it on with light_group_switch)." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
@@ -274,20 +278,24 @@ Properties:
 - attenuation: Light attenuation factor that controls falloff.
 - color: Light color.
 - energy: Brightness multiplier for the light.
-- fade_begin: Distance where the light starts to fade.
 - flicker: Enable random flicker effect when true.
 - shadows: Whether the light casts shadows." 
 [
 	attenuation(float) : "Light attenuation factor that controls falloff." : "0.3"
 	color(color255) : "Light color." : "214 178 133"
 	energy(float) : "Brightness multiplier for the light." : "2.0"
-	fade_begin(float) : "Distance where the light starts to fade." : "40.0"
 	flicker(choices) : "Enable random flicker effect when true." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
 	]
 	shadows(choices) : "Whether the light casts shadows." : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	light_group(string) : "Optional. Name shared by lights that light_group_switch switches together." : ""
+	start_off(choices) : "If true, the light starts switched off (turn it on with light_group_switch)." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
@@ -300,20 +308,24 @@ Properties:
 - attenuation: Light attenuation factor that controls falloff.
 - color: Light color.
 - energy: Brightness multiplier for the light.
-- fade_begin: Distance where the light starts to fade.
 - flicker: Enable random flicker effect when true.
 - shadows: Whether the light casts shadows." 
 [
 	attenuation(float) : "Light attenuation factor that controls falloff." : "0.3"
 	color(color255) : "Light color." : "214 178 133"
 	energy(float) : "Brightness multiplier for the light." : "2.0"
-	fade_begin(float) : "Distance where the light starts to fade." : "40.0"
 	flicker(choices) : "Enable random flicker effect when true." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
 	]
 	shadows(choices) : "Whether the light casts shadows." : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	light_group(string) : "Optional. Name shared by lights that light_group_switch switches together." : ""
+	start_off(choices) : "If true, the light starts switched off (turn it on with light_group_switch)." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
@@ -326,20 +338,24 @@ Properties:
 - attenuation: Light attenuation factor that controls falloff.
 - color: Light color.
 - energy: Brightness multiplier for the light.
-- fade_begin: Distance where the light starts to fade.
 - flicker: Enable random flicker effect when true.
 - shadows: Whether the light casts shadows." 
 [
 	attenuation(float) : "Light attenuation factor that controls falloff." : "0.3"
 	color(color255) : "Light color." : "214 178 133"
 	energy(float) : "Brightness multiplier for the light." : "2.0"
-	fade_begin(float) : "Distance where the light starts to fade." : "40.0"
 	flicker(choices) : "Enable random flicker effect when true." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
 	]
 	shadows(choices) : "Whether the light casts shadows." : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	light_group(string) : "Optional. Name shared by lights that light_group_switch switches together." : ""
+	start_off(choices) : "If true, the light starts switched off (turn it on with light_group_switch)." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
@@ -352,14 +368,12 @@ Properties:
 - attenuation: Light attenuation factor that controls falloff.
 - color: Light color.
 - energy: Brightness multiplier for the light.
-- fade_begin: Distance where the light starts to fade.
 - flicker: Enable random flicker effect when true.
 - shadows: Whether the light casts shadows." 
 [
 	attenuation(float) : "Light attenuation factor that controls falloff." : "0.3"
 	color(color255) : "Light color." : "214 178 133"
 	energy(float) : "Brightness multiplier for the light." : "2.0"
-	fade_begin(float) : "Distance where the light starts to fade." : "40.0"
 	flicker(choices) : "Enable random flicker effect when true." : 0 = 
 	[
 		0 : "No"
@@ -370,11 +384,17 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
+	light_group(string) : "Optional. Name shared by lights that light_group_switch switches together." : ""
+	start_off(choices) : "If true, the light starts switched off (turn it on with light_group_switch)." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
 ]
 
-@SolidClass color(204 204 204) = info_footstep_surface : "Marks the surface to be queryable for footstep noises" []
+@SolidClass color(204 204 204) = world_footstep_surface : "Marks the surface to be queryable for footstep noises" []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_portal_scene : "Adds a portal that loads a .map file by name. Uses MapDiscovery to find the map in bundled game data first, then user://maps/.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = portal_scene : "Adds a portal that loads a .map file by name. Uses MapDiscovery to find the map in bundled game data first, then user://maps/.
 
 Properties:
 - enable_fuses: If true, this portal requires all fuse collectibles to be placed before it activates.
@@ -394,7 +414,7 @@ Properties:
 	]
 ]
 
-@SolidClass color(204 204 204) = platform_rotate_y : "Rotate a group of brushes on the Y axis
+@SolidClass color(204 204 204) = mover_rotate_y : "Rotate a group of brushes on the Y axis
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
@@ -403,7 +423,7 @@ Properties:
 [
 	direction(integer) : "Rotation direction: 1 for clockwise/forward, -1 for counter-clockwise/reverse." : 1
 	speed(float) : "Rotation speed in degrees per second for the platform group." : "45.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = audio_loop : "Positional 3D audio loop that plays continuously on map load. Uses distance-based attenuation and audio occlusion. Set 'path' to a res:// resource path pointing to an .ogg file. Ambient loops live under res://assets/audio/ambient/ (e.g. ambient_cave.ogg, ambient_river.ogg). SFX-style ambient sounds live under res://assets/audio/sfx/ambient/ (e.g. ambient_fan.ogg, sfx_fire_loop.ogg). Routes audio through the 'sfx' bus by default.
@@ -424,7 +444,7 @@ Properties:
 	path(string) : "Godot resource path to an .ogg audio file (must start with res://). Ambient loops: res://assets/audio/ambient/ambient_cave.ogg. SFX-style: res://assets/audio/sfx/ambient/ambient_fan.ogg." : ""
 ]
 
-@SolidClass color(204 204 204) = platform_rotate_z : "Rotate a group of brushes on the Z axis
+@SolidClass color(204 204 204) = mover_rotate_z : "Rotate a group of brushes on the Z axis
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
@@ -433,7 +453,7 @@ Properties:
 [
 	direction(integer) : "Rotation direction: 1 for clockwise/forward, -1 for counter-clockwise/reverse." : 1
 	speed(float) : "Rotation speed in degrees per second for the platform group." : "45.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_laser : "Adds a laser that does lots of fun damage to you. Yay!" []
@@ -445,7 +465,7 @@ Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
 	ms_between_shots(float) : "Milliseconds between consecutive shots fired by this trap." : "500.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_rocket : "Adds a rocket that just shoots you. Keep name off if you want it to just shoot forever. Otherwise, providing a name makes it work off of a trigger. Homing is already turned off.
@@ -455,10 +475,10 @@ Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
 	ms_between_shots(float) : "Milliseconds between consecutive shots fired by this trap." : "500.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = trigger_looping_moveable_brush : "Creates an endless looping brush, when it hits the end point it teleports back to the start position.
+@SolidClass color(204 204 204) = mover_loop : "Creates an endless looping brush, when it hits the end point it teleports back to the start position.
 
 Properties:
 - direction: Vector3 direction for brush movement.
@@ -469,12 +489,12 @@ Properties:
 	direction(string) : "Vector3 direction for brush movement." : "0.0 -1.0 0.0"
 	move_distance(float) : "Distance the brush travels before looping." : "2.0"
 	move_speed(float) : "Movement speed of the brush." : "1.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_fireflies : "Adds bugs that fly around" []
 
-@SolidClass color(204 204 204) = trigger_looping_moveable_smooth_brush : "Creates an endless looping brush, when it hits the end point it loops smoothly  back to the start position
+@SolidClass color(204 204 204) = mover_loop_smooth : "Creates an endless looping brush, when it hits the end point it loops smoothly  back to the start position
 
 Properties:
 - direction: Vector3 direction for brush movement.
@@ -485,43 +505,43 @@ Properties:
 	direction(string) : "Vector3 direction for brush movement." : "0.0 1.0 0.0"
 	move_distance(float) : "Distance the brush travels before looping." : "2.0"
 	move_speed(float) : "Movement speed of the brush." : "1.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass color(204 204 204) model({"path": "trenchbroom/models/hazard_train.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) = hazard_train : "Moving train hazard that follows a target path or marker.
+@PointClass color(204 204 204) model({"path": "trenchbroom/models/trap_train.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) = trap_train : "Moving train hazard that follows a target path or marker.
 
 Properties:
 - uid_to_move_to: The uid of the marker/waypoint to move to." 
 [
-	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : "The uid of the marker/waypoint to move to."
+	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : ""
 ]
 
 @SolidClass color(204 204 204) = destructable_light : "Breakable light fixture that can be destroyed by damage; used for dynamic lighting or scripted interactions." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_marker_path : "Path marker used to define ordered marker sequences for moving platforms or entity paths.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = marker_path : "Path marker used to define ordered marker sequences for moving platforms or entity paths.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_path_simulator : "Small helper object that visually follows a named `info_marker_path` sequence for testing or debugging paths.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = marker_path_simulator : "Small helper object that visually follows a named `marker_path` sequence for testing or debugging paths.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_remove_ammo : "Removes all player ammo when triggered
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_remove_ammo : "Removes all player ammo when triggered
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
 - remove_revolver_ammo: If true, removes revolver ammo from the player.
 - remove_shotgun_ammo: If true, removes shotgun ammo from the player." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	remove_revolver_ammo(choices) : "If true, removes revolver ammo from the player." : 0 = 
 	[
 		0 : "No"
@@ -534,29 +554,7 @@ Properties:
 	]
 ]
 
-@SolidClass color(204 204 204) = trigger_remove_weapons : "Invokes weapon removal on the player
-
-Properties:
-- remove_revolver: If true, removes the player's revolver when entering the area.
-- remove_shotgun: If true, removes the player's shotgun when entering the area.
-- restore_on_leave: If true, previously removed weapons are restored when the player leaves the area." 
-[
-	remove_revolver(choices) : "If true, removes the player's revolver when entering the area." : 0 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	remove_shotgun(choices) : "If true, removes the player's shotgun when entering the area." : 0 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	restore_on_leave(choices) : "If true, previously removed weapons are restored when the player leaves the area." : 0 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-]
+@SolidClass color(204 204 204) = area_remove_weapons : "Removes both weapons and all ammo when the player enters, then deletes itself (fires once)." []
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_steam : "Adds a steam hazard (trap)" 
 [
@@ -580,9 +578,9 @@ Properties:
 	pulse_rate(integer) : "Pulse frequency rate (how often it triggers): 1 = low frequency (long off time), 2 = medium frequency, 3 = high frequency (short off time) with matching random spreads." : 2
 ]
 
-@SolidClass color(204 204 204) = info_particle_collision : "Area that handles particle collision logic (e.g., surfaces that interact with particle systems)." []
+@SolidClass color(204 204 204) = effect_particle_collision : "Area that handles particle collision logic (e.g., surfaces that interact with particle systems)." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_screen_level_details : "Display screen that shows level information; set `level_name` to choose which level's details to show.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_level_details_screen : "Display screen that shows level information; set `level_name` to choose which level's details to show.
 
 Properties:
 - level_name: Named level identifier used to select and display level details on the screen." 
@@ -590,7 +588,7 @@ Properties:
 	level_name(string) : "Named level identifier used to select and display level details on the screen." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_screen_area_unlock : "Display screen that shows area unlock details; set `area_name` to the unlock identifier shown.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_area_unlock_screen : "Display screen that shows area unlock details; set `area_name` to the unlock identifier shown.
 
 Properties:
 - area_name: Identifier of the area whose unlock details are displayed on this screen." 
@@ -598,7 +596,7 @@ Properties:
 	area_name(string) : "Identifier of the area whose unlock details are displayed on this screen." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_new_enemy : "Adds a new enemy that can be spawned by a trigger.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_spawn : "Adds a new enemy that can be spawned by a trigger.
 
 ENEMY_MELEE - 1
 ENEMY_DYNAMITE - 2
@@ -624,10 +622,10 @@ Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
 	enemy_type(integer) : "Numeric ID indicating which enemy to spawn when triggered." : 0
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = info_control_prompt : "Displays an on-screen control prompt when the player is within the area.
+@SolidClass color(204 204 204) = tutorial_control_prompt : "Displays an on-screen control prompt when the player is within the area.
 
 Properties:
 - action_display: Text to display on the prompt.
@@ -639,50 +637,44 @@ Properties:
 	context(string) : "Optional context string to describe the prompt's purpose." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_destructive : "a panel you can destroy to open doors and do stuff
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_panel_destructive : "a panel you can destroy to open doors and do stuff
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_electrical : "A panel you have to shoot with an electrical shot from the revolver to open doors and do stuff
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_panel_electrical : "A panel you have to shoot with an electrical shot from the revolver to open doors and do stuff
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = panel_fuse : "fuse panel to activate portals
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_panel_fuse : "fuse panel to activate portals
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@SolidClass color(204 204 204) = trigger_electric_panel : "Only triggered by revolver special fire
+@SolidClass color(204 204 204) = area_electric_panel : "Only triggered by revolver special fire
 
 Properties:
-- is_player_only: If true, only the player can activate this electric panel (ignores NPCs/objects).
 - ms_timeout: Cooldown in milliseconds between activations to prevent repeated triggering.
 - trigger_once: If true, the panel triggers only once and then disables.
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	is_player_only(choices) : "If true, only the player can activate this electric panel (ignores NPCs/objects)." : 0 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
 	ms_timeout(float) : "Cooldown in milliseconds between activations to prevent repeated triggering." : "0.0"
 	trigger_once(choices) : "If true, the panel triggers only once and then disables." : 0 = 
 	[
 		0 : "No"
 		1 : "Yes"
 	]
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
 @SolidClass color(204 204 204) = func_group : "Groups entities together for toggling later
@@ -690,10 +682,10 @@ Properties:
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = door_switch : "A standard wall switch with trigger. Features an omnilight reflecting toggle status (red for off, green for on when oneshot, purple for on when toggleable).
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_switch : "A standard wall switch with trigger. Features an omnilight reflecting toggle status (red for off, green for on when oneshot, purple for on when toggleable).
 
 Properties:
 - oneshot: If true, the switch triggers only once and then becomes inactive.
@@ -716,18 +708,19 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
+	light_attenuation(float) : "Falloff of the status omnilight (default 0.5)." : "0.5"
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = door_switch_floor : "a standard floor based door switch with trigger
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_floor_switch : "a standard floor based door switch with trigger
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_portal_full_scene : "Adds a portal with a visual frame that loads a .map file by name. Uses MapDiscovery to find the map in bundled game data first, then user://maps/.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = portal_full_scene : "Adds a portal with a visual frame that loads a .map file by name. Uses MapDiscovery to find the map in bundled game data first, then user://maps/.
 
 Properties:
 - enable_fuses: If true, this portal requires all fuse collectibles to be placed before it activates.
@@ -747,15 +740,15 @@ Properties:
 	]
 ]
 
-@SolidClass color(204 204 204) = trigger_area_arena : "Creates an area that requires all enemies to die before triggering leave.
+@SolidClass color(204 204 204) = area_arena : "Creates an area that requires all enemies to die before triggering leave.
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = keycard_switch : "the box next to doors that actiavtes them via keycard
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_keycard_switch : "the box next to doors that actiavtes them via keycard
 
 Properties:
 - keycard: Type or identifier of the keycard required to activate this switch (e.g., RED, BLUE, ORANGE, GREEN).
@@ -764,10 +757,14 @@ Properties:
 [
 	is_activated(integer) : "0 or 1. If 1, starts already activated/granted with green light." : 0
 	keycard(string) : "Type or identifier of the keycard required to activate this switch (e.g., RED, BLUE, ORANGE, GREEN)." : ""
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
+	light_energy(float) : "Brightness of the status omnilight (default 1.0)." : "1.0"
+	light_range(float) : "Range of the status omnilight in meters (default 16.0)." : "16.0"
+	light_offset(float) : "Distance in meters to place the omnilight in front of the switch face (default 1.0)." : "1.0"
+	light_attenuation(float) : "Falloff of the status omnilight (default 1.0)." : "1.0"
 ]
 
-@SolidClass color(204 204 204) = info_water_flowing : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it. This is the moving version of the water.
+@SolidClass color(204 204 204) = water_flowing : "Creates a water hazard, instant-death needs to be toggled on to kill the player if they touch it. This is the moving version of the water.
 
 Properties:
 - color: Tint color for the water surface.
@@ -794,10 +791,10 @@ Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
 	file_path(string) : "Path to the audio file resource to play." : ""
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = info_area_secret_unlock : "Unlocks a secret
+@SolidClass color(204 204 204) = area_secret_unlock : "Unlocks a secret
 
 Properties:
 - secret_int: Integer identifier for the secret unlock state to set." 
@@ -805,7 +802,7 @@ Properties:
 	secret_int(integer) : "Integer identifier for the secret unlock state to set." : 0
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_particle_loop : "Continuously plays a looping particle effect at its location.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = effect_particle_loop : "Continuously plays a looping particle effect at its location.
 
 Particle Types:
 0 = Sparks Wall
@@ -838,29 +835,9 @@ Properties:
 	path(string) : "Optional filesystem path to a custom particle scene (overrides particle_type if set)." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = SecurityCamera : "A decorative security camera" []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_security_camera : "A decorative security camera" []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_arcane : "Special/arcane enemy that uses magical projectiles or unique behaviours; great for varied encounter design." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_drone : "Flying enemy that maneuvers in the air to pursue and attack the player; useful for vertical threats and harassment patterns." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_dynamite : "Explosive enemy that detonates after a short delay or on contact, causing area damage." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_flamethrower : "a flamehthrower robot " []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_gas : "Gasser enemy that emits poisonous gas to damage or slow players within range." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_loot : "Loot-carrying enemy that drops items when defeated; useful for rewarding combat encounters." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_melee : "Melee enemy that attacks close-range targets; use for frontline threats and encounters." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_shield : "Enemy with a shield mechanic that reduces incoming damage or blocks attacks until disabled." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_shooter : "Ranged enemy that aims and fires projectiles at the player; suitable for creating skirmish encounters and cover-based threats." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_spider_mine : "Proximity mine enemy that detonates when the player is nearby; use for area denial and traps." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_turret : "Adds an enemy turret to the game
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_turret : "Adds an enemy turret to the game
 
 Properties:
 - type: Turret variant identifier (e.g. MINIGUN, FLAMETHROWER, ROCKET, SNIPER) that selects firing behaviour and projectile type." 
@@ -868,7 +845,14 @@ Properties:
 	type(string) : "Turret variant identifier (e.g. MINIGUN, SHOTGUN) that selects firing behaviour and projectile type." : "MINIGUN"
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_adrenaline : "Temporary adrenaline powerup that increases player speed and rate-of-fire for a short duration." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_adrenaline : "Temporary adrenaline powerup that increases player speed and rate-of-fire for a short duration." 
+[
+	infinite(choices) : "If true, the pickup stays after being collected and can be grabbed again." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_arcane_chainsaw : "Arcane chainsaw powerup that grants a temporary melee weapon or enhanced melee damage for a short duration." []
 
@@ -970,9 +954,9 @@ Properties:
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_shotgun : "Shotgun weapon pickup that gives the player a shotgun and initial shells upon collection." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = destructable_prefab_vent : "Breakable vent prefab that can be destroyed" []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = destructable_vent : "Breakable vent prefab that can be destroyed" []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_sign : "Creates a sign with text
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = display_sign : "Creates a sign with text
 
 Properties:
 - text: Text to display on the sign" 
@@ -980,26 +964,26 @@ Properties:
 	text(string) : "Text to display on the sign" : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_load_scene : "Transition to a new scene by adding this trigger next to an area.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_load_scene : "Transition to a new scene by adding this trigger next to an area.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
 - scene_path: Filesystem path to the scene resource to instantiate when triggered.
 - uid_to_move_to: The uid of the marker/waypoint to move to." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	scene_path(string) : "Filesystem path to the scene resource to instantiate when triggered." : ""
-	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : "The uid of the marker/waypoint to move to."
+	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_remove_guns : "Removes all specified guns when trigger is invoked by area
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_remove_guns : "Removes all specified guns when trigger is invoked by area
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
 - remove_revolver: If true, removes revolver from the player.
 - remove_shotgun: If true, removes shotgun from the player." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	remove_revolver(choices) : "If true, removes revolver from the player." : 0 = 
 	[
 		0 : "No"
@@ -1030,6 +1014,7 @@ Properties:
 	gib_scale(float) : "Extra multiplier on top of the automatic AABB-derived gib scale (default 1.0). Gibs already auto-scale to the object's size; use this to fine-tune further." : "1.0"
 	no_drops(integer) : "1 disables all pickups from spawning when this object is destroyed" : 0
 	uid_to_invoke(string) : "The uid of the entity to invoke when this object is destroyed." : ""
+	kick_hits(integer) : "Kicks needed to break it. 0 = automatic (glass breaks in 1)." : 0
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_environment : "Creates environmental tweaks in the environment.
@@ -1097,7 +1082,7 @@ Properties:
 
 @SolidClass color(204 204 204) = destructable_vending_machine : "A dynamic destructable vending machine. Spits out health and armor pickups." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_explosion : "Spawns an explosion at this point when triggered. Supports multiple explosions with a delay between each.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = effect_explosion : "Spawns an explosion at this point when triggered. Supports multiple explosions with a delay between each.
 
 EXPLOSION - 4 (default)
 EXPLOSION_CANNON - 5
@@ -1116,10 +1101,10 @@ Properties:
 	count(integer) : "Number of explosions to spawn." : 1
 	explosion_type(integer) : "Particle type ID for the explosion. See entity description for values." : 4
 	ms_delay(float) : "Delay in milliseconds between each explosion when count is greater than 1." : "0.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = trigger_explosion_force : "A brush that sits frozen in place until triggered. On trigger, physics activates and an impulse is applied, launching it in the configured direction. Direction is randomized within a spread cone and the impulse is applied off-center for organic tumbling.
+@SolidClass color(204 204 204) = mover_explosion_force : "A brush that sits frozen in place until triggered. On trigger, physics activates and an impulse is applied, launching it in the configured direction. Direction is randomized within a spread cone and the impulse is applied off-center for organic tumbling.
 
 Properties:
 - direction: Base direction the brush is launched. Does not need to be normalized.
@@ -1133,11 +1118,11 @@ Properties:
 	direction_spread(float) : "Max random deviation from direction in degrees. 0 = perfectly straight." : "20.0"
 	force(float) : "Base impulse magnitude applied on trigger." : "10.0"
 	force_variation(float) : "Fraction of force randomly added or removed (0.0 to 1.0). 0.25 = +-25%." : "0.25"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	torque_scale(float) : "Magnitude of random angular impulse applied on trigger. 0 disables spin." : "5.0"
 ]
 
-@SolidClass color(204 204 204) = info_area_achievement_unlock : "Unlocks an achievement
+@SolidClass color(204 204 204) = area_achievement_unlock : "Unlocks an achievement
 
 Properties:
 - achievement_name: The unique API name of the Steam/in-game achievement to unlock." 
@@ -1145,7 +1130,7 @@ Properties:
 	achievement_name(string) : "The unique API name of the Steam/in-game achievement to unlock." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_menu : "Shows a menu on screen by type
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_menu : "Shows a menu on screen by type
 
 NONE = 0
 MAIN = 1
@@ -1171,15 +1156,15 @@ Properties:
 	menu_type(integer) : "Menu screen index: 0=None, 1=Main, 2=SaveSlots, 3=CustomMaps, 4=Extras, 5=Credits, 6=Options, 7=Sound, 8=Video, 9=Game, 10=ControlsMK, 11=ControlsJoypad, 12=Pause, 13=Death, 14=RoundComplete, 15=Terminal, 16=DemoEnd." : 0
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_bool_relay : "Reads the save state for custom data under custom_data, and if the boolean reads true it will immediately invoke the trigger on ready.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_bool_relay : "Reads the save state for custom data under custom_data, and if the boolean reads true it will immediately invoke the trigger on ready.
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_terminal_email : "Adds an email to the lounge terminal inbox and persists it to save state. Set as the trigger_target of a trigger_area to fire on player entry.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_terminal_email : "Adds an email to the lounge terminal inbox and persists it to save state. Set as the trigger_target of a area_trigger to fire on player entry.
 
 Properties:
 - email_address: Address line shown in the message header (e.g. TO: T73-D1 | FROM: COMMAND)
@@ -1192,10 +1177,8 @@ Properties:
 	email_body(string) : "Full body text of the email" : ""
 	email_subject(string) : "Subject line — also used as the uniqueness key; duplicate subjects are ignored" : ""
 	email_timestamp(string) : "Timestamp displayed in the message header (e.g. 2026-03-15 08:32:04)" : "2026-01-01 00:00:00"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_spinner : "Light enemy that patrols shoots a 360 spray of bullets at your ankles. " []
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_map_data : "Configure level configurations (hub status, weapons disabled, flashlight default on, music disabled, kill depth, start voiceover).
 
@@ -1207,43 +1190,14 @@ Properties:
 - force_light_bake: If true, forces light baking properties for static meshes.
 - is_hub_level: If true, the level behaves as a main hub (progress, status, and saves persist differently).
 - kill_depth: The Y height threshold below which entities (including the player) die instantly.
-- vo_on_start: Resource path of the voiceover audio track to play on level start." 
+- vo_on_start: Resource path of the voiceover audio track to play on level start.
+- trophy_silver_any_time: Any% time in seconds to earn silver.
+- trophy_gold_any_time: Any% time in seconds to earn gold.
+- trophy_platinum_any_time: Any% time in seconds to earn platinum.
+- trophy_silver_100p_time: 100% time in seconds to earn silver.
+- trophy_gold_100p_time: 100% time in seconds to earn gold.
+- trophy_platinum_100p_time: 100% time in seconds to earn platinum." 
 [
-	badge_all_scrap_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_all_secrets_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_hardcore_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_no_damage_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_no_revolver_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_no_shotgun_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
-	badge_pacifist_enabled(choices) : "" : 1 = 
-	[
-		0 : "No"
-		1 : "Yes"
-	]
 	default_flashlight_on(choices) : "If true, the player's flashlight is automatically turned on when entering the level." : 0 = 
 	[
 		0 : "No"
@@ -1276,9 +1230,15 @@ Properties:
 	]
 	kill_depth(float) : "The Y height threshold below which entities (including the player) die instantly." : "-200.0"
 	vo_on_start(string) : "Resource path of the voiceover audio track to play on level start." : ""
+	trophy_silver_any_time(float) : "Any% time in seconds to earn silver." : "60.0"
+	trophy_gold_any_time(float) : "Any% time in seconds to earn gold." : "45.0"
+	trophy_platinum_any_time(float) : "Any% time in seconds to earn platinum." : "30.0"
+	trophy_silver_100p_time(float) : "100% time in seconds to earn silver." : "80.0"
+	trophy_gold_100p_time(float) : "100% time in seconds to earn gold." : "65.0"
+	trophy_platinum_100p_time(float) : "100% time in seconds to earn platinum." : "50.0"
 ]
 
-@SolidClass color(204 204 204) = info_dangerous_fluid : "Creates a dangerous fluid hazard (acid, lava, or arctic water) that instantly kills the player.
+@SolidClass color(204 204 204) = area_dangerous_fluid : "Creates a dangerous fluid hazard (acid, lava, or arctic water) that instantly kills the player.
 0 = acid
 1 = lava
 2 = arctic
@@ -1305,21 +1265,21 @@ Properties:
 	teleport_name(string) : "Optional marker name to teleport the player on death/restart." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_tutorial_marker : "A wobbly, pulsing holographic blue ring on the floor to highlight message/tutorial areas." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = tutorial_marker : "A wobbly, pulsing holographic blue ring on the floor to highlight message/tutorial areas." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_display_screen_tips : "Display screen that displays general tutorial tips." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = display_screen_tips : "Display screen that displays general tutorial tips." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_display_screen_tutorial : "Display screen that displays the combat tutorial." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = tutorial_screen : "Display screen that displays the combat tutorial." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_lounge_terminal : "Interactable lounge terminal to check stats, email, and progress." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_terminal : "Interactable lounge terminal to check stats, email, and progress." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_lounge_radio : "Lounge radio that plays music and is destructible." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_radio : "Lounge radio that plays music and is destructible." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_tutorial_dummy : "Tutorial target practice dummy enemy that takes damage and detects weapon hit types." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = tutorial_dummy : "Tutorial target practice dummy enemy that takes damage and detects weapon hit types." []
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trap_landmine : "Explosive landmine trap that triggers when the player steps on it." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_enemy_spawner : "Periodically spawns a specific enemy type (based on EnemyGeneric.ENEMY_TYPES enum) at a configured frequency, with a concurrent limit.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_spawner : "Periodically spawns a specific enemy type (based on EnemyGeneric.ENEMY_TYPES enum) at a configured frequency, with a concurrent limit.
 
 ENEMY_MELEE - 1
 ENEMY_DYNAMITE - 2
@@ -1333,7 +1293,7 @@ ENEMY_LOOTBOT - 9
 ENEMY_FLAMETHROWER - 10
 ENEMY_GASBOT - 11
 ENEMY_SPINNER - 12
-ENEMY_TURRET_STANDING - 13
+(13 is the turret: not spawnable here. Place trap_turret, or use enemy_spawn.)
 ENEMY_MINEBOT - 14
 ENEMY_MINIGUN - 15
 ENEMY_KNIFE - 16
@@ -1345,6 +1305,8 @@ Properties:
 - enemy_type: Numeric ID indicating which enemy to spawn.
 - max_lifetime_units: Maximum total enemies this node can spawn in its lifetime (0 = infinite).
 - uid: Unique id for this entity. Other entities reference it by this value.
+- uid_to_invoke_on_spawn: Optional. Uid of the entity to invoke each time this spawner spawns an enemy.
+- uid_to_invoke_on_death: Optional. Uid of the entity to invoke each time an enemy from this spawner dies. Pair with logic_counter to fire once after N kills.
 - spawn_frequency: Spawn frequency in seconds.
 - spawn_maximum: Maximum concurrent alive enemies spawned by this node." 
 [
@@ -1357,10 +1319,12 @@ Properties:
 	max_lifetime_units(integer) : "Maximum total enemies this node can spawn in its lifetime (0 = infinite)." : 0
 	spawn_frequency(float) : "Spawn frequency in seconds." : "5.0"
 	spawn_maximum(integer) : "Maximum concurrent alive enemies spawned by this node." : 3
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	uid_to_invoke_on_spawn(string) : "Optional. Uid of the entity to invoke each time this spawner spawns an enemy." : ""
+	uid_to_invoke_on_death(string) : "Optional. Uid of the entity to invoke each time an enemy from this spawner dies." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = alarm_light : "A rotating industrial sweep alarm beacon light that can be toggled on/off.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_alarm : "A rotating industrial sweep alarm beacon light that can be toggled on/off.
 
 Properties:
 - _is_audio_enabled: Whether looping alarm sound is enabled (1 or 0).
@@ -1376,14 +1340,15 @@ Properties:
 		1 : "Yes"
 	]
 	light_color(color255) : "The color of the alarm light." : "255 0 0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	rotation_speed(float) : "Rotation speed in degrees per second." : "360.0"
 ]
 
-@SolidClass color(204 204 204) = info_window : "Mark a brush as a window, that cannot be destroyed." 
+@SolidClass color(204 204 204) = world_window : "Mark a brush as a window, that cannot be destroyed." 
 [
 	footstep_sound_type(string) : "Optional footstep audio override when walking on this window (options: metal, wood, outside, snow, ice, water, concrete/default)." : ""
 	render_priority(integer) : "Render priority for transparent materials on this window (default: 2, so it renders in front of water which is priority 1, and below bullet decals which are priority 3)." : 2
+	sorting_offset(float) : "Render sorting offset for overlapping transparent windows." : "0.0"
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = destructable_fan : "A destructible ceiling fan that spins when intact.
@@ -1393,10 +1358,8 @@ Properties:
 - uid_to_invoke: The uid of the entity to invoke." 
 [
 	spin_speed(float) : "Rotation speed of the fan blades in degrees per second." : "720.0"
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_achilles : "Light melee enemy that patrols and collides with the player; good for simple obstacle enemies." []
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_revolver_head_burster : "Revolver Head Burster powerup." []
 
@@ -1416,7 +1379,7 @@ Properties:
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = powerup_shotgun_kinetic_battery : "Next shotgun ground slam does 10x damage and has 2x area of effect." []
 
-@SolidClass color(204 204 204) = func_display_screen : "Custom display screen brush. Renders a CRT-styled screen with a customizable heading and subtext stretching to the brush size. Font sizes are fully customizable.
+@SolidClass color(204 204 204) = display_screen : "Custom display screen brush. Renders a CRT-styled screen with a customizable heading and subtext stretching to the brush size. Font sizes are fully customizable.
 
 Properties:
 - destroyable: Whether this screen can be damaged/destroyed by weapons.
@@ -1444,9 +1407,9 @@ Properties:
 	text_color(color255) : "Theme accent color for the text elements." : "230 153 26"
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_display_screen_tutorial_companion : "Display screen that displays the dynamic keybind instructions following along with the combat tutorial." []
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = tutorial_screen_companion : "Display screen that displays the dynamic keybind instructions following along with the combat tutorial." []
 
-@SolidClass color(204 204 204) = trigger_area_weather : "0 = NONE
+@SolidClass color(204 204 204) = area_weather : "0 = NONE
 1 = RAIN
 2 = SNOW
 3 = ASH
@@ -1458,9 +1421,9 @@ Properties:
 	weather_type(integer) : "0 = NONE1 = RAIN2 = SNOW3 = ASH4 = SANDSTORM" : 0
 ]
 
-@SolidClass color(204 204 204) = func_ice : "A static solid body that acts as ice, reducing player traction and increasing sliding." []
+@SolidClass color(204 204 204) = world_ice : "A static solid body that acts as ice, reducing player traction and increasing sliding." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_enemy_arena_spawner : "Arena wave spawner manager. Spawns random or static waves of enemies and triggers targets when cleared.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_arena_spawner : "Arena wave spawner manager. Spawns random or static waves of enemies and triggers targets when cleared.
 
 Properties:
 - enabled: Whether the arena spawner starts active immediately.
@@ -1484,7 +1447,7 @@ ENEMY_LOOTBOT - 9
 ENEMY_FLAMETHROWER - 10
 ENEMY_GASBOT - 11
 ENEMY_SPINNER - 12
-ENEMY_TURRET_STANDING - 13
+(13 is the turret: not spawnable here. Place trap_turret, or use enemy_spawn.)
 ENEMY_MINEBOT - 14
 ENEMY_MINIGUN - 15
 ENEMY_KNIFE - 16
@@ -1502,12 +1465,12 @@ ENEMY_HAMMER - 18"
 	spawn_points(string) : "Target name of info_markers to randomly use for spawning. If empty, spawns at parent node." : ""
 	spawn_type(string) : "Spawn mode: 'random' or 'static'." : "random"
 	static_spawn(string) : "Static wave definitions, wave-separated by semicolon, enemy-separated by comma, e.g., '1,1,1;4,4'." : ""
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = pickup_scrap : "Scrap collectible picked up by the player." []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interactable_trigger : "generic press-E interactable with no model or state of its own; fires target(s) by name
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = interact_trigger : "generic press-E interactable with no model or state of its own; fires target(s) by name
 
 Properties:
 - uid_to_invoke: The uid of the entity to invoke.
@@ -1524,7 +1487,8 @@ Properties:
 	]
 	prompt(string) : "Text shown in the 'Press [E] to ...' prompt." : "Interact"
 	radius(float) : "Interact detection radius." : "2.0"
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
+	prompt_color(string) : "Optional prompt text color, e.g. #ff5500. Empty = default." : ""
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_waving_guy : "A tall, slender humanoid waving guy silhouette" []
@@ -1554,10 +1518,10 @@ Properties:
 		0 : "No"
 		1 : "Yes"
 	]
-	uid_to_invoke(string) : "The uid of the entity to invoke." : "The uid of the entity to invoke."
+	uid_to_invoke(string) : "The uid of the entity to invoke." : ""
 ]
 
-@SolidClass color(204 204 204) = platform_crusher : "Configurable crushing block. Extends toward a named target marker, becomes lethal at max extension, then retracts back to its start and repeats. Can optionally 'fake out' with partial jabs before a real crush. Plays built-in push/pull/impact crush SFX and a dust burst automatically, no audio_attached needed.
+@SolidClass color(204 204 204) = mover_crusher : "Configurable crushing block. Extends toward a named target marker, becomes lethal at max extension, then retracts back to its start and repeats. Can optionally 'fake out' with partial jabs before a real crush. Plays built-in push/pull/impact crush SFX and a dust burst automatically, no audio_attached needed.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
@@ -1583,21 +1547,21 @@ Properties:
 		1 : "Yes"
 	]
 	move_speed(float) : "Movement speed of the brush while extending/retracting." : "6.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	retracted_pause(float) : "Seconds the brush rests fully retracted before starting the next cycle." : "1.5"
 	start_delay(float) : "Seconds to wait after map load before the first cycle begins." : "0.0"
-	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : "The uid of the marker/waypoint to move to."
+	uid_to_move_to(string) : "The uid of the marker/waypoint to move to." : ""
 ]
 
-@SolidClass color(204 204 204) = refraction_glass : "Standard refraction glass brush. Frosted, ribbed glass that blurs what is behind it. The look is fixed so all glass in the game matches.
+@SolidClass color(204 204 204) = world_refraction_glass : "Standard refraction glass brush. Frosted, ribbed glass that blurs what is behind it. The look is fixed so all glass in the game matches.
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = platform_rotate_x : "Rotate a group of brushes on the X axis
+@SolidClass color(204 204 204) = mover_rotate_x : "Rotate a group of brushes on the X axis
 
 Properties:
 - uid: Unique id for this entity. Other entities reference it by this value.
@@ -1606,10 +1570,10 @@ Properties:
 [
 	direction(integer) : "Rotation direction: 1 for clockwise/forward, -1 for counter-clockwise/reverse." : 1
 	speed(float) : "Rotation speed in degrees per second for the platform group." : "45.0"
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = info_player_clip : "Invisible barrier that blocks the player from entering an area, but allows projectiles and enemies to pass through." 
+@SolidClass color(204 204 204) = world_player_clip : "Invisible barrier that blocks the player from entering an area, but allows projectiles and enemies to pass through." 
 [
 	show_barrier(choices) : "When enabled (1 / true), displays an animated sparkly purple plasma barrier on this clip block. When disabled (0 / false), remains completely invisible." : 0 = 
 	[
@@ -1618,9 +1582,9 @@ Properties:
 	]
 ]
 
-@SolidClass color(204 204 204) = info_lounge_starfield : "Solid brush entity that renders an opaque cosmic starfield shader with infinite parallax depth on its surfaces." []
+@SolidClass color(204 204 204) = lounge_starfield : "Solid brush entity that renders an opaque cosmic starfield shader with infinite parallax depth on its surfaces." []
 
-@SolidClass color(204 204 204) = info_killbox : "Lethal trigger volume that instantly kills the player and removes all their speed and momentum upon contact." []
+@SolidClass color(204 204 204) = area_killbox : "Lethal trigger volume that instantly kills the player and removes all their speed and momentum upon contact." []
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = audio_ambient_sound : "Positional 3D ambient sound node that plays an .ogg audio loop at this point location. Automatically searches res://assets/audio/ and user://maps/ recursively by filename. Routes audio to the 'ambience' bus by default.
 
@@ -1654,6 +1618,7 @@ Properties:
 	pitch_scale(float) : "Pitch scale multiplier." : "1.0"
 	sound_name(string) : "Name of the .ogg audio file to play (searches res://assets/audio/ and user://maps/ automatically)." : "ambient_drone"
 	volume_db(float) : "Volume adjustment in dB." : "0.0"
+	unit_size(float) : "Distance where the sound starts to fall off (default 10.0)." : "10.0"
 ]
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_cinecam : "Cinematic camera viewpoint used during round complete when End Map Replay is disabled. Cycles through placed cinecams to showcase scenic areas of the map.
@@ -1669,7 +1634,7 @@ Properties:
 	order(integer) : "Sorting index for sequential playback order (default 0)." : 0
 ]
 
-@SolidClass color(204 204 204) = func_light_blinking : "Blinking computer / indicator light brush with zero-emission unshaded texture. Overlays a white texture, recolors to specified color with 2x HDR overclock when lit, and goes black when off.
+@SolidClass color(204 204 204) = light_blinking : "Blinking computer / indicator light brush with zero-emission unshaded texture. Overlays a white texture, recolors to specified color with 2x HDR overclock when lit, and goes black when off.
 
 Properties:
 - color: The active indicator color (RGBA).
@@ -1697,7 +1662,7 @@ Properties:
 	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_terminal_sector : "Interactive sector terminal that displays level details and cycles through a sector's maps to tune a linked interactive portal.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_sector_terminal : "Interactive sector terminal that displays level details and cycles through a sector's maps to tune a linked interactive portal.
 
 Properties:
 - sector: Sector identifier (alpha, bravo, charlie, delta). Default: alpha.
@@ -1715,7 +1680,7 @@ Properties:
 	uid_to_invoke(string) : "Target portal uid to tune when destination is cycled. Default: portal_alpha." : "portal_alpha"
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_portal_interactive : "Interactive sector portal that can be tuned remotely by a terminal, turning off and re-igniting with SFX and particles when its destination changes.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = portal_interactive : "Interactive sector portal that can be tuned remotely by a terminal, turning off and re-igniting with SFX and particles when its destination changes.
 
 Properties:
 - uid: Unique identifier for this portal so terminals can target it via uid_to_invoke (e.g. portal_alpha).
@@ -1731,19 +1696,17 @@ Properties:
 	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_mine_bot : "Mine bot enemy that wanders randomly (avoiding ramps), drops landmine traps, and turns into a stationary proximity bomb when out of mines." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_toggle_bool : "Allows you to toggle a specific save state boolean to true when invoked. Automatically saves.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_toggle_bool : "Allows you to toggle a specific save state boolean to true when invoked. Automatically saves.
 
 Properties:
 - name: Save-state boolean name which will be set to true when invoked.
 - uid: Unique id for this entity. Other entities reference it by this value." 
 [
 	name(string) : "Save-state boolean name which will be set to true when invoked." : ""
-	uid(string) : "Unique id for this entity. Other entities reference it by this value." : "Unique id for this entity. Other entities reference it by this value."
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@SolidClass color(204 204 204) = func_display_poster : "Custom digital poster display screen brush. Stretches a poster texture across the brush geometry with a CRT screen overlay. Deterministically selects from JPL posters based on world position by default, or supports manual poster index and random mode.
+@SolidClass color(204 204 204) = display_poster : "Custom digital poster display screen brush. Stretches a poster texture across the brush geometry with a CRT screen overlay. Deterministically selects from JPL posters based on world position by default, or supports manual poster index and random mode.
 
 Properties:
 - poster_index: Specific poster index (0-14). Set to -1 for automatic selection.
@@ -1800,7 +1763,7 @@ Properties:
 	volume_db(float) : "Target volume in dB when inside the room (default 0.0 dB)." : "0.0"
 ]
 
-@SolidClass color(204 204 204) = func_graffiti : "Graffiti brush entity. Stretches a graffiti texture onto the brush geometry with alpha transparency. Automatically selects from graffiti images (0-17) based on world position. Not destructible. Avoids decal limits (32 max).
+@SolidClass color(204 204 204) = decor_graffiti : "Graffiti brush entity. Stretches a graffiti texture onto the brush geometry with alpha transparency. Automatically selects from graffiti images (0-17) based on world position. Not destructible. Avoids decal limits (32 max).
 
 Properties:
 - flip_x: If true, horizontally flips the projected graffiti." 
@@ -1812,7 +1775,7 @@ Properties:
 	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = vegetation_bush_func : "Vegetation bush. Automatically selects one of 8 bush models (tree_pack/bushXX) based on world position, so placement is deterministic across builds.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_vegetation_bush : "Vegetation bush. Automatically selects one of 8 bush models (tree_pack/bushXX) based on world position, so placement is deterministic across builds.
 
 Properties:
 - variant: -1 = auto (position-based). 0-7 forces a specific model.
@@ -1826,7 +1789,7 @@ Properties:
 	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = vegetation_tree_func : "Vegetation tree. Automatically selects one of 36 tree models (tree_pack/treeXX) based on world position, so placement is deterministic across builds.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_vegetation_tree : "Vegetation tree. Automatically selects one of 36 tree models (tree_pack/treeXX) based on world position, so placement is deterministic across builds.
 
 Properties:
 - variant: -1 = auto (position-based). 0-35 forces a specific model.
@@ -1860,27 +1823,20 @@ Properties:
 	teleport_name(string) : "Name of a target_generic marker to teleport the player to on contact." : "default"
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_minigun : "Heavy twin-minigun robot that spins up and sprays a continuous stream of bullets along its facing; turns slowly while firing so strafing dodges the spray." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_rocket_bot : "Treaded rocket-launching robot that keeps its distance: backs off when the player closes in, strafes at mid range, and fires tracking rockets from its right-arm launcher." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_knife : "Agile hovering knife robot that circles the player and performs high-speed targeted dash attacks." []
-
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = enemy_hammer : "Heavy sledgehammer robot that sprints at the player and lands one big hammer swing up close; any damage stuns it and cancels the swing." []
-
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = decor_cat : "A decorative cat model" []
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = info_screen_cpu_cluster : "Interactive display screen that tracks all 15 alpha-charlie sector CPUs, plays a scrolling per-level verification visualization when pressing [E] ('Verify CPU Cluster'), and triggers 'Open Door' when all 15 alpha-charlie CPUs are collected.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_cpu_cluster_screen : "Interactive display screen that tracks all 15 alpha-charlie sector CPUs, plays a scrolling per-level verification visualization when pressing [E] ('Verify CPU Cluster'), and triggers 'Open Door' when all 15 alpha-charlie CPUs are collected.
 
 Properties:
-- uid: Optional identifier for linking from a trigger_cpu_cluster or interactable_trigger.
+- uid: Optional identifier for linking from a lounge_cpu_cluster or interact_trigger.
 - uid_to_invoke: Target door UID to invoke when all 15 alpha-charlie CPUs are verified and opened.
 - required_cpus: Sector CPUs required to unlock the door. 0 (default) = all 15 alpha-charlie CPUs.
-- interactive: If true (default), shows built-in [E] prompt on the screen unless claimed by a trigger_cpu_cluster.
+- interactive: If true (default), shows built-in [E] prompt on the screen unless claimed by a lounge_cpu_cluster.
 - radius: Built-in interaction detection radius (default 3.5).
-- oneshot: If true (default), opening the door fires once." 
+- oneshot: If true (default), opening the door fires once.
+- auto_open_on_verify: If true, invokes the door as soon as every CPU is verified, without pressing E." 
 [
-	interactive(choices) : "If true (default), shows built-in [E] prompt on the screen unless claimed by a trigger_cpu_cluster." : 1 = 
+	interactive(choices) : "If true (default), shows built-in [E] prompt on the screen unless claimed by a lounge_cpu_cluster." : 1 = 
 	[
 		0 : "No"
 		1 : "Yes"
@@ -1892,15 +1848,20 @@ Properties:
 	]
 	radius(float) : "Built-in interaction detection radius." : "3.5"
 	required_cpus(integer) : "Sector CPUs required to unlock the door. 0 (default) = all 15 alpha-charlie CPUs." : 0
-	uid(string) : "Optional identifier for linking from a trigger_cpu_cluster or interactable_trigger." : "cpu_cluster"
+	uid(string) : "Optional identifier for linking from a lounge_cpu_cluster or interact_trigger." : "cpu_cluster"
 	uid_to_invoke(string) : "Target door UID to invoke when all 15 alpha-charlie CPUs are verified and opened." : ""
+	auto_open_on_verify(choices) : "If true, invokes the door as soon as every CPU is verified, without pressing E." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_cpu_cluster : "Press-[E] trigger for the CPU Cluster Screen. Prompts 'Verify CPU Cluster' to launch the scrolling per-level CPU verification display, and prompts 'Open Door' to invoke uid_to_invoke once all 15 alpha-charlie CPUs are verified.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = lounge_cpu_cluster : "Press-[E] trigger for the CPU Cluster Screen. Prompts 'Verify CPU Cluster' to launch the scrolling per-level CPU verification display, and prompts 'Open Door' to invoke uid_to_invoke once all 15 alpha-charlie CPUs are verified.
 
 Properties:
 - uid_to_invoke: The UID of the door or target entity to invoke when all 15 alpha-charlie CPUs are verified.
-- screen_uid: Optional UID of the info_screen_cpu_cluster to link (leave empty to auto-link nearest screen).
+- screen_uid: Optional UID of the lounge_cpu_cluster_screen to link (leave empty to auto-link nearest screen).
 - required_cpus: Sector CPUs required to open the door. 0 (default) = all 15 alpha-charlie CPUs.
 - radius: Interact detection radius (default 3.0).
 - oneshot: If true (default), disappears after opening the door." 
@@ -1912,11 +1873,11 @@ Properties:
 	]
 	radius(float) : "Interact detection radius." : "3.0"
 	required_cpus(integer) : "Sector CPUs required to open the door. 0 (default) = all 15 alpha-charlie CPUs." : 0
-	screen_uid(string) : "Optional UID of the info_screen_cpu_cluster to link (leave empty to auto-link nearest screen)." : ""
+	screen_uid(string) : "Optional UID of the lounge_cpu_cluster_screen to link (leave empty to auto-link nearest screen)." : ""
 	uid_to_invoke(string) : "The UID of the door or target entity to invoke when all 15 alpha-charlie CPUs are verified." : ""
 ]
 
-@SolidClass color(204 204 204) = func_crystal : "Glowing crystal structure. Every brush in this entity gets a Quake-style procedural crystal shader: pixel-snapped dark-base to bright-tip gradient over the group height, flat per-face shade, the brush texture screen-blended over the top, and an animated band of light rising up the facets. Crystals are semi-translucent so you can see through them.
+@SolidClass color(204 204 204) = world_crystal : "Glowing crystal structure. Every brush in this entity gets a Quake-style procedural crystal shader: pixel-snapped dark-base to bright-tip gradient over the group height, flat per-face shade, the brush texture screen-blended over the top, and an animated band of light rising up the facets. Crystals are semi-translucent so you can see through them.
 
 Properties:
 - color: Crystal color (default cyan).
@@ -1930,19 +1891,27 @@ Properties:
 	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_counter : "Counts incoming invoke() calls and invokes uid_to_invoke once required_count is reached.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_counter : "Counts incoming invoke() calls and invokes uid_to_invoke once required_count is reached.
 
 Properties:
 - required_count: Number of invoke() calls required before firing (default 2).
 - uid: Unique id for this entity. Other entities reference it by this value.
-- uid_to_invoke: The uid of the entity to invoke once required_count is reached." 
+- uid_to_invoke: The uid of the entity to invoke once required_count is reached.
+- uid_to_invoke_on_step: Optional. The uid of the entity to invoke on every counted invoke (including the last).
+- reset_after_fire: If true, the count resets after firing so it can fire again (waves, loops). If false, it fires once." 
 [
 	required_count(integer) : "Number of invoke() calls required before firing (default 2)." : 2
 	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
 	uid_to_invoke(string) : "The uid of the entity to invoke once required_count is reached." : ""
+	uid_to_invoke_on_step(string) : "Optional. The uid of the entity to invoke on every counted invoke (including the last)." : ""
+	reset_after_fire(choices) : "If true, the count resets after firing so it can fire again. If false, it fires once." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
 ]
 
-@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = trigger_achievement_unlock : "Unlocks an achievement when invoked by another trigger or destructible.
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_achievement_unlock : "Unlocks an achievement when invoked by another trigger or destructible.
 
 Properties:
 - achievement_name: The unique API name of the in-game/Steam achievement to unlock.
@@ -1950,4 +1919,130 @@ Properties:
 [
 	achievement_name(string) : "The unique API name of the in-game/Steam achievement to unlock." : ""
 	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_delay : "Invokes uid_to_invoke a set number of seconds after being invoked. Pauses with the game.
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value.
+- uid_to_invoke: The uid of the entity to invoke when the delay ends.
+- delay: Seconds to wait before invoking (0 = immediately).
+- cancel_on_reinvoke: If true, invoking again while waiting cancels the pending invoke. If false, extra invokes are ignored." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	uid_to_invoke(string) : "The uid of the entity to invoke when the delay ends." : ""
+	delay(float) : "Seconds to wait before invoking (0 = immediately)." : "1.0"
+	cancel_on_reinvoke(choices) : "If true, invoking again while waiting cancels the pending invoke. If false, extra invokes are ignored." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_sequence : "Each invoke fires the next uid in a comma-separated list, in order.
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value.
+- uids_to_invoke: Comma-separated uids fired one per invoke, in order (e.g. room_a,room_b,room_c).
+- loop: If true, wraps back to the first uid after the last. If false, stops after the last." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	uids_to_invoke(string) : "Comma-separated uids fired one per invoke, in order (e.g. room_a,room_b,room_c)." : ""
+	loop(choices) : "If true, wraps back to the first uid after the last. If false, stops after the last." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_random : "Each invoke fires one uid picked at random from a comma-separated list.
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value.
+- uids_to_invoke: Comma-separated uids to pick from (e.g. ambush_a,ambush_b,ambush_c).
+- no_repeat: If true, never picks the same uid twice in a row (when the list has more than one)." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	uids_to_invoke(string) : "Comma-separated uids to pick from (e.g. ambush_a,ambush_b,ambush_c)." : ""
+	no_repeat(choices) : "If true, never picks the same uid twice in a row (when the list has more than one)." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_repeater : "Invokes uid_to_invoke on a fixed interval while enabled. Invoking the repeater toggles it on/off. Pauses with the game.
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value.
+- uid_to_invoke: The uid of the entity to invoke every interval.
+- interval: Seconds between invokes (minimum 0.05).
+- enabled: Whether the repeater starts running at map load.
+- fire_on_enable: If true, fires once immediately when switched on instead of waiting one interval.
+- max_fires: Stops for good after this many fires (0 = unlimited)." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	uid_to_invoke(string) : "The uid of the entity to invoke every interval." : ""
+	interval(float) : "Seconds between invokes (minimum 0.05)." : "1.0"
+	enabled(choices) : "Whether the repeater starts running at map load." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	fire_on_enable(choices) : "If true, fires once immediately when switched on instead of waiting one interval." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	max_fires(integer) : "Stops for good after this many fires (0 = unlimited)." : 0
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = logic_gate : "Passes invokes through to uid_to_invoke only while open. Other entities open/close it through its control uids. Combine with logic_counter for AND/OR logic.
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value. Invoking this uid tries to pass through the gate.
+- uid_to_invoke: The uid invoked when an invoke passes through an open gate.
+- uid_open: Invoking this uid opens the gate.
+- uid_close: Invoking this uid closes the gate.
+- uid_toggle: Invoking this uid flips the gate open/closed.
+- start_open: Whether the gate starts open.
+- close_after_pass: If true, the gate closes after one invoke passes through." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value. Invoking this uid tries to pass through the gate." : ""
+	uid_to_invoke(string) : "The uid invoked when an invoke passes through an open gate." : ""
+	uid_open(string) : "Invoking this uid opens the gate." : ""
+	uid_close(string) : "Invoking this uid closes the gate." : ""
+	uid_toggle(string) : "Invoking this uid flips the gate open/closed." : ""
+	start_open(choices) : "Whether the gate starts open." : 1 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	close_after_pass(choices) : "If true, the gate closes after one invoke passes through." : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+]
+
+@PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = light_group_switch : "Switches every light (light_tiny ... light_xlarge) whose light_group matches.
+
+mode:
+0 - toggle
+1 - on
+2 - off
+3 - flicker (short stutter)
+
+Properties:
+- uid: Unique id for this entity. Other entities reference it by this value.
+- light_group: Name of the light group to control. Set the same light_group on the lights.
+- mode: 0 = toggle, 1 = on, 2 = off, 3 = flicker.
+- fade_time: Seconds to fade on/off (0 = instant). Ignored by flicker.
+- flicker_ms: Flicker duration in milliseconds (mode 3 only)." 
+[
+	uid(string) : "Unique id for this entity. Other entities reference it by this value." : ""
+	light_group(string) : "Name of the light group to control. Set the same light_group on the lights." : ""
+	mode(integer) : "0 = toggle, 1 = on, 2 = off, 3 = flicker." : 0
+	fade_time(float) : "Seconds to fade on/off (0 = instant). Ignored by flicker." : "0.0"
+	flicker_ms(integer) : "Flicker duration in milliseconds (mode 3 only)." : 1000
 ]

@@ -75,7 +75,7 @@
 }
 // entity 4
 {
-"classname" "info_terminal_sector"
+"classname" "lounge_sector_terminal"
 "origin" "0 -256 0"
 "angle" "90"
 "sector" "example_pack"
@@ -83,7 +83,7 @@
 }
 // entity 5
 {
-"classname" "info_portal_interactive"
+"classname" "portal_interactive"
 "origin" "448 0 64"
 "angle" "180"
 "uid" "portal_example_pack"

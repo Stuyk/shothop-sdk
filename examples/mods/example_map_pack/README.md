@@ -3,7 +3,7 @@
 A sector with a hub and two levels. Copy this folder into your **mods** folder.
 
 - **`mod.json`** declares the sector `example_pack` with levels `example_pack_01` and `example_pack_02`. It shows in the lounge under **SECTOR DATA**.
-- **`example_pack_hub.map`** has an `info_terminal_sector` (`sector` = `example_pack`) that retunes the `info_portal_interactive` with `uid` `portal_example_pack`. Use the terminal to pick a level.
+- **`example_pack_hub.map`** has a `lounge_sector_terminal` (`sector` = `example_pack`) that retunes the `portal_interactive` with `uid` `portal_example_pack`. Use the terminal to pick a level.
 - **`example_pack_01.map`** has a trigger that wakes two melee spawners, then a portal to level 2 with the results screen on.
 - **`example_pack_02.map`** wakes shooters and a hammer bot, then the portal takes you back to the hub.
 

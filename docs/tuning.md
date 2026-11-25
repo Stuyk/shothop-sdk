@@ -77,8 +77,8 @@ shothop --headless -- mod keys HAMMER
 | `CONTROLLED_LOOTBOT_HEALTH` | `25.0` |  |
 | `DIFFICULTY_ENEMY_SPEED_MULTIPLIER` | `[0.75, 1.0, 1.0]` | Enemy movement speed |
 | `DIFFICULTY_DAMAGE_TAKEN_MULTIPLIER` | `[1.0, 1.25, 2.0]` | All damage the player takes (enemies + hazards) |
-| `DIFFICULTY_SPAWNER_FREQUENCY_OFFSET` | `[0.0, 0.0, -1.0]` | Delta (seconds) to trigger_enemy_spawner interval |
-| `DIFFICULTY_SPAWNER_COUNT_BONUS` | `[0, 0, 1]` | Bonus concurrent & finite lifetime count on trigger_enemy_spawner |
+| `DIFFICULTY_SPAWNER_FREQUENCY_OFFSET` | `[0.0, 0.0, -1.0]` | Delta (seconds) to enemy_spawner interval |
+| `DIFFICULTY_SPAWNER_COUNT_BONUS` | `[0, 0, 1]` | Bonus concurrent & finite lifetime count on enemy_spawner |
 | `ENEMY_CATCH_UP_SPEED_FACTOR` | `0.5` | Chase speed added per m/s the player moves above sprint speed |
 | `ENEMY_CATCH_UP_FAR_DISTANCE_MIN` | `15.0` | Distance (m) where the far-away bonus starts |
 | `ENEMY_CATCH_UP_FAR_DISTANCE_MAX` | `40.0` | Distance (m) where the far-away bonus is at full strength |
